@@ -4,6 +4,8 @@ import { useForm } from '@/hooks/web/useForm'
 import { useValidator } from '@/hooks/web/useValidator'
 import { reactive, ref, watch } from 'vue'
 import { ElDivider, ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from '@/hooks/web/useI18n'
+const { t } = useI18n()
 
 const props = defineProps({
   userInfo: {
@@ -17,7 +19,7 @@ const { required, phone, maxlength, email } = useValidator()
 const formSchema = reactive<FormSchema[]>([
   {
     field: 'realName',
-    label: '昵称',
+    label: t('personal.nickname'),
     component: 'Input',
     colProps: {
       span: 24
@@ -25,7 +27,7 @@ const formSchema = reactive<FormSchema[]>([
   },
   {
     field: 'phoneNumber',
-    label: '手机号码',
+    label: t('personal.phoneNumber'),
     component: 'Input',
     colProps: {
       span: 24
@@ -33,7 +35,7 @@ const formSchema = reactive<FormSchema[]>([
   },
   {
     field: 'email',
-    label: '邮箱',
+    label: t('personal.email'),
     component: 'Input',
     colProps: {
       span: 24
@@ -68,16 +70,16 @@ const save = async () => {
     console.log(err)
   })
   if (valid) {
-    ElMessageBox.confirm('是否确认修改?', '提示', {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
+    ElMessageBox.confirm(t('personal.confirmModify'), t('common.tip'), {
+      confirmButtonText: t('common.confirm'),
+      cancelButtonText: t('common.cancel'),
       type: 'warning'
     })
       .then(async () => {
         try {
           saveLoading.value = true
           // 这里可以调用修改用户信息接口
-          ElMessage.success('修改成功')
+          ElMessage.success(t('common.success'))
         } catch (error) {
           console.log(error)
         } finally {
@@ -92,5 +94,5 @@ const save = async () => {
 <template>
   <Form :rules="rules" @register="formRegister" :schema="formSchema" />
   <ElDivider />
-  <BaseButton type="primary" @click="save">保存</BaseButton>
+  <BaseButton type="primary" @click="save">{{ t('common.save') }}</BaseButton>
 </template>

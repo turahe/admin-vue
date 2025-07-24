@@ -4,13 +4,14 @@ import { useForm } from '@/hooks/web/useForm'
 import { reactive, ref } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { ElMessage, ElMessageBox, ElDivider } from 'element-plus'
-
+import { useI18n } from '@/hooks/web/useI18n'
+const { t } = useI18n()
 const { required } = useValidator()
 
 const formSchema = reactive<FormSchema[]>([
   {
     field: 'password',
-    label: '旧密码',
+    label: t('personal.oldPassword'),
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -18,7 +19,7 @@ const formSchema = reactive<FormSchema[]>([
   },
   {
     field: 'newPassword',
-    label: '新密码',
+    label: t('personal.newPassword'),
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -29,7 +30,7 @@ const formSchema = reactive<FormSchema[]>([
   },
   {
     field: 'newPassword2',
-    label: '确认新密码',
+    label: t('personal.confirmNewPassword'),
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -49,7 +50,7 @@ const rules = reactive({
         const formData = await getFormData()
         const { newPassword2 } = formData
         if (val !== newPassword2) {
-          callback(new Error('新密码与确认新密码不一致'))
+          callback(new Error(t('personal.newPasswordNotMatch')))
         } else {
           callback()
         }
@@ -63,7 +64,7 @@ const rules = reactive({
         const formData = await getFormData()
         const { newPassword } = formData
         if (val !== newPassword) {
-          callback(new Error('确认新密码与新密码不一致'))
+          callback(new Error(t('personal.confirmNewPasswordNotMatch')))
         } else {
           callback()
         }
@@ -82,16 +83,16 @@ const save = async () => {
     console.log(err)
   })
   if (valid) {
-    ElMessageBox.confirm('是否确认修改?', '提示', {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
+    ElMessageBox.confirm(t('personal.confirmModify'), t('common.tip'), {
+      confirmButtonText: t('common.confirm'),
+      cancelButtonText: t('common.cancel'),
       type: 'warning'
     })
       .then(async () => {
         try {
           saveLoading.value = true
           // 这里可以调用修改密码的接口
-          ElMessage.success('修改成功')
+          ElMessage.success(t('common.success'))
         } catch (error) {
           console.log(error)
         } finally {
@@ -106,5 +107,5 @@ const save = async () => {
 <template>
   <Form :rules="rules" @register="formRegister" :schema="formSchema" />
   <ElDivider />
-  <BaseButton type="primary" @click="save">确认修改</BaseButton>
+  <BaseButton type="primary" @click="save">{{ t('common.confirm') }}</BaseButton>
 </template>

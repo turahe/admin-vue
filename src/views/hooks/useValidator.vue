@@ -5,7 +5,8 @@ import { useValidator } from '@/hooks/web/useValidator'
 import { useForm } from '@/hooks/web/useForm'
 import { reactive } from 'vue'
 import { FormItemRule } from 'element-plus'
-
+import { useI18n } from '@/hooks/web/useI18n'
+const { t } = useI18n()
 const { formRegister, formMethods } = useForm()
 
 const { getFormData } = formMethods
@@ -15,32 +16,32 @@ const { required, lengthRange, notSpace, notSpecialCharacters } = useValidator()
 const formSchema = reactive<FormSchema[]>([
   {
     field: 'field1',
-    label: '必填',
+    label: t('common.required'),
     component: 'Input'
   },
   {
     field: 'field2',
-    label: '长度范围',
+    label: t('common.lengthRange'),
     component: 'Input'
   },
   {
     field: 'field3',
-    label: '不能有空格',
+    label: t('common.noSpace'),
     component: 'Input'
   },
   {
     field: 'field4',
-    label: '不能有特殊字符',
+    label: t('common.noSpecialCharacters'),
     component: 'Input'
   },
   {
     field: 'field5',
-    label: '是否相等-值1',
+    label: t('common.isEqualValue1'),
     component: 'Input'
   },
   {
     field: 'field6',
-    label: '是否相等-值2',
+    label: t('common.isEqualValue2'),
     component: 'Input'
   }
 ])
@@ -63,7 +64,7 @@ const rules = reactive<{
         const formData = await getFormData()
         const { field6 } = formData
         if (val !== field6) {
-          callback(new Error('两个值不相等'))
+          callback(new Error(t('common.twoValuesAreNotEqual')))
         } else {
           callback()
         }

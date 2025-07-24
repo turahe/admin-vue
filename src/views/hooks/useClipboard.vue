@@ -3,7 +3,8 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { useClipboard } from '@/hooks/web/useClipboard'
 import { ElInput } from 'element-plus'
 import { ref } from 'vue'
-
+import { useI18n } from '@/hooks/web/useI18n'
+const { t } = useI18n()
 const { copy, copied, text, isSupported } = useClipboard()
 
 const source = ref('')
@@ -11,16 +12,16 @@ const source = ref('')
 
 <template>
   <ContentWrap title="useClipboard">
-    <ElInput v-model="source" placeholder="请输入要复制的内容" />
+    <ElInput v-model="source" :placeholder="t('common.pleaseEnterTheContentToBeCopied')" />
     <div v-if="isSupported">
       <BaseButton @click="copy(source)" type="primary" class="mt-20px">
-        <span v-if="!copied">复制</span>
-        <span v-else>已复制</span>
+        <span v-if="!copied">{{ t('common.copy') }}</span>
+        <span v-else>{{ t('common.copied') }}</span>
       </BaseButton>
       <p>
-        当前已复制: <code>{{ text || 'none' }}</code>
+        {{ t('common.currentCopied') }}: <code>{{ text || 'none' }}</code>
       </p>
     </div>
-    <p v-else> 你的浏览器不支持 Clipboard API </p>
+    <p v-else> {{ t('common.yourBrowserDoesNotSupportClipboardAPI') }} </p>
   </ContentWrap>
 </template>

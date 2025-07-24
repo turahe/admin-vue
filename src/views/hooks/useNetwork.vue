@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { useNetwork } from '@/hooks/web/useNetwork'
-
+import { useI18n } from '@/hooks/web/useI18n'
+const { t } = useI18n()
 const { online } = useNetwork()
 </script>
 
 <template>
   <ContentWrap title="useNetwork">
-    当前网络状态: <code>{{ online ? '已连接' : '已断开' }}</code>
+    {{ t('common.currentNetworkStatus') }}: <code>{{ online ? t(' ') : t('common.disconnected') }}</code>
   </ContentWrap>
 </template>
