@@ -6,15 +6,15 @@ interface RoleParams {
 }
 
 export const loginApi = (data: UserLoginType): Promise<IResponse<LaravelAuthResponse>> => {
-  return request.post({ url: '/login', data })
+  return request.post({ url: '/auth/login', data })
 }
 
 export const loginOutApi = (): Promise<IResponse> => {
-  return request.post({ url: '/logout' })
+  return request.post({ url: '/auth/logout' })
 }
 
 export const getUserApi = (): Promise<IResponse<UserType>> => {
-  return request.get({ url: '/user' })
+  return request.get({ url: '/user/profile' })
 }
 
 export const getUserListApi = ({ params }: AxiosConfig) => {
