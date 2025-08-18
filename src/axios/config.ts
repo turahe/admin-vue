@@ -6,6 +6,18 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 import { objToFormData } from '@/utils'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
+  // Add Bearer token for Laravel Passport authentication
+  const userStore = useUserStoreWithOut()
+  const token = userStore.getToken()
+  if (token && !config.url?.includes('/login')) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
+  
+  // Set default Content-Type for API requests
+  if (!config.headers['Content-Type']) {
+    config.headers['Content-Type'] = 'application/json'
+  }
+  
   if (
     config.method === 'post' &&
     config.headers['Content-Type'] === 'application/x-www-form-urlencoded'
@@ -39,15 +51,27 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
   if (response?.config?.responseType === 'blob') {
     // 如果是文件流，直接过
     return response
-  } else if (response.data.code === SUCCESS_CODE) {
-    return response.data
-  } else {
-    ElMessage.error(response?.data?.message)
-    if (response?.data?.code === 401) {
-      const userStore = useUserStoreWithOut()
-      userStore.logout()
+  }
+  
+  // Handle Laravel API responses - they might not have a 'code' field
+  if (response.status === 200 || response.status === 201) {
+    // For Laravel Passport, successful responses might not have a 'code' field
+    if (response.data.code === SUCCESS_CODE || !response.data.hasOwnProperty('code')) {
+      return response.data
     }
   }
+  
+  // Handle error responses
+  const errorMessage = response?.data?.message || response?.data?.error || 'An error occurred'
+  ElMessage.error(errorMessage)
+  
+  // Handle 401 Unauthorized responses
+  if (response.status === 401 || response?.data?.code === 401) {
+    const userStore = useUserStoreWithOut()
+    userStore.logout()
+  }
+  
+  return Promise.reject(response.data)
 }
 
 export { defaultResponseInterceptors, defaultRequestInterceptors }
