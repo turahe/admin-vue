@@ -9,7 +9,7 @@ import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserType } from '@/api/login/types'
+import { UserLoginType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
@@ -30,7 +30,7 @@ const { currentRoute, addRoute, push } = useRouter()
 const { t } = useI18n()
 
 const rules = {
-  username: [required()],
+  email: [required()],
   password: [required()]
 }
 
@@ -49,15 +49,15 @@ const schema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'username',
-    label: t('login.username'),
-    // value: 'admin',
+    field: 'email',
+    label: t('login.email'),
+    // value: 'admin@example.com',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: 'admin or test'
+      placeholder: t('login.emailPlaceholder') || 'Enter your email'
     }
   },
   {
@@ -72,7 +72,7 @@ const schema = reactive<FormSchema[]>([
       style: {
         width: '100%'
       },
-      placeholder: 'admin or test',
+      placeholder: t('login.passwordPlaceholder') || 'Enter your password',
       // 按下enter键触发登录
       onKeydown: (_e: any) => {
         if (_e.key === 'Enter') {
@@ -198,8 +198,8 @@ const remember = ref(userStore.getRememberMe)
 const initLoginInfo = () => {
   const loginInfo = userStore.getLoginInfo
   if (loginInfo) {
-    const { username, password } = loginInfo
-    setValues({ username, password })
+    const { email, password } = loginInfo
+    setValues({ email, password })
   }
 }
 onMounted(() => {
@@ -233,23 +233,32 @@ const signIn = async () => {
   await formRef?.validate(async (isValid) => {
     if (isValid) {
       loading.value = true
-      const formData = await getFormData<UserType>()
+      const formData = await getFormData<UserLoginType>()
 
       try {
         const res = await loginApi(formData)
 
-        if (res) {
+        if (res && res.data) {
+          // Store the token and user info from Laravel Passport response
+          const { access_token, token_type, expires_in, user } = res.data
+          
+          // Set token in store
+          userStore.setToken(access_token, token_type, expires_in)
+          
+          // Set user info
+          userStore.setUserInfo(user)
+          
           // 是否记住我
           if (unref(remember)) {
             userStore.setLoginInfo({
-              username: formData.username,
+              email: formData.email,
               password: formData.password
             })
           } else {
             userStore.setLoginInfo(undefined)
           }
           userStore.setRememberMe(unref(remember))
-          userStore.setUserInfo(res.data)
+          
           // 是否使用动态路由
           if (appStore.getDynamicRouter) {
             getRole()
@@ -262,6 +271,8 @@ const signIn = async () => {
             push({ path: redirect.value || permissionStore.addRouters[0].path })
           }
         }
+      } catch (error) {
+        console.error('Login failed:', error)
       } finally {
         loading.value = false
       }
@@ -271,9 +282,9 @@ const signIn = async () => {
 
 // 获取角色信息
 const getRole = async () => {
-  const formData = await getFormData<UserType>()
+  const formData = await getFormData<UserLoginType>()
   const params = {
-    roleName: formData.username
+    roleName: formData.email
   }
   const res =
     appStore.getDynamicRouter && appStore.getServerDynamicRouter

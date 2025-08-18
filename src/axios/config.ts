@@ -6,6 +6,19 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 import { objToFormData } from '@/utils'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
+  // Add Bearer token to all requests
+  const userStore = useUserStoreWithOut()
+  const token = userStore.getToken
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
+  
+  // Set default headers for API requests
+  if (!config.headers['Content-Type']) {
+    config.headers['Content-Type'] = 'application/json'
+  }
+  config.headers['Accept'] = 'application/json'
+  
   if (
     config.method === 'post' &&
     config.headers['Content-Type'] === 'application/x-www-form-urlencoded'

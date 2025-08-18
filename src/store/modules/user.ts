@@ -3,7 +3,7 @@ import { store } from '../index'
 import { UserLoginType, UserType } from '@/api/login/types'
 import { ElMessageBox } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
-import { loginOutApi } from '@/api/login'
+import { loginOutApi, getUserApi } from '@/api/login'
 import { useTagsViewStore } from './tagsView'
 import router from '@/router'
 
@@ -11,6 +11,8 @@ interface UserState {
   userInfo?: UserType
   tokenKey: string
   token: string
+  tokenType: string
+  expiresIn?: number
   roleRouters?: string[] | AppCustomRouteRecordRaw[]
   rememberMe: boolean
   loginInfo?: UserLoginType
@@ -22,6 +24,8 @@ export const useUserStore = defineStore('user', {
       userInfo: undefined,
       tokenKey: 'Authorization',
       token: '',
+      tokenType: 'Bearer',
+      expiresIn: undefined,
       roleRouters: undefined,
       // 记住我
       rememberMe: true,
@@ -52,11 +56,25 @@ export const useUserStore = defineStore('user', {
     setTokenKey(tokenKey: string) {
       this.tokenKey = tokenKey
     },
-    setToken(token: string) {
+    setToken(token: string, tokenType: string = 'Bearer', expiresIn?: number) {
       this.token = token
+      this.tokenType = tokenType
+      this.expiresIn = expiresIn
     },
     setUserInfo(userInfo?: UserType) {
       this.userInfo = userInfo
+    },
+    async fetchUserInfo() {
+      try {
+        const res = await getUserApi()
+        if (res && res.data) {
+          this.setUserInfo(res.data)
+          return res.data
+        }
+      } catch (error) {
+        console.error('Failed to fetch user info:', error)
+        this.reset()
+      }
     },
     setRoleRouters(roleRouters: string[] | AppCustomRouteRecordRaw[]) {
       this.roleRouters = roleRouters
@@ -79,7 +97,7 @@ export const useUserStore = defineStore('user', {
     reset() {
       const tagsViewStore = useTagsViewStore()
       tagsViewStore.delAllViews()
-      this.setToken('')
+      this.setToken('', 'Bearer')
       this.setUserInfo(undefined)
       this.setRoleRouters([])
       router.replace('/login')

@@ -120,7 +120,9 @@ export default {
     passwordPlaceholder: '请输入密码',
     code: '验证码',
     codePlaceholder: '请输入验证码',
-    getCode: '获取验证码'
+    getCode: '获取验证码',
+    email: '邮箱',
+    emailPlaceholder: '请输入邮箱'
   },
   router: {
     login: '登录',
