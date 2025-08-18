@@ -9,7 +9,7 @@ import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserType } from '@/api/login/types'
+import { UserType, UserLoginType, LoginResponse } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
@@ -49,15 +49,15 @@ const schema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'username',
-    label: t('login.username'),
-    // value: 'admin',
+    field: 'email',
+    label: t('login.email'),
+    // value: 'admin@example.com',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: 'admin or test'
+      placeholder: 'Enter your email address'
     }
   },
   {
@@ -233,23 +233,49 @@ const signIn = async () => {
   await formRef?.validate(async (isValid) => {
     if (isValid) {
       loading.value = true
-      const formData = await getFormData<UserType>()
+      const formData = await getFormData<UserLoginType>()
 
       try {
         const res = await loginApi(formData)
 
         if (res) {
+          // Handle Laravel Passport response
+          let token: string
+          let userInfo: UserType
+          
+          if (res.token && res.user) {
+            // Laravel Passport response format: { token: string, user: UserType }
+            token = res.token
+            userInfo = res.user
+          } else if (res.access_token) {
+            // Alternative Laravel Passport format: { access_token: string, user: UserType }
+            token = res.access_token
+            userInfo = res.user || res
+          } else if (res.data) {
+            // Wrapped response format: { data: { token: string, user: UserType } }
+            token = res.data.token || res.data.access_token
+            userInfo = res.data.user || res.data
+          } else {
+            // Fallback - assume the response contains the token directly
+            token = res.token || res.access_token
+            userInfo = res.user || res
+          }
+
+          // Store the authentication token
+          userStore.setToken(token)
+          
           // 是否记住我
           if (unref(remember)) {
             userStore.setLoginInfo({
-              username: formData.username,
+              email: formData.email,
               password: formData.password
             })
           } else {
             userStore.setLoginInfo(undefined)
           }
           userStore.setRememberMe(unref(remember))
-          userStore.setUserInfo(res.data)
+          userStore.setUserInfo(userInfo)
+          
           // 是否使用动态路由
           if (appStore.getDynamicRouter) {
             getRole()
@@ -271,9 +297,9 @@ const signIn = async () => {
 
 // 获取角色信息
 const getRole = async () => {
-  const formData = await getFormData<UserType>()
+  const userInfo = userStore.getUserInfo()
   const params = {
-    roleName: formData.username
+    roleName: userInfo?.name || userInfo?.email
   }
   const res =
     appStore.getDynamicRouter && appStore.getServerDynamicRouter

@@ -4,6 +4,7 @@ import { defaultRequestInterceptors, defaultResponseInterceptors } from './confi
 import { AxiosInstance, InternalAxiosRequestConfig, RequestConfig, AxiosResponse } from './types'
 import { ElMessage } from 'element-plus'
 import { REQUEST_TIMEOUT } from '@/constants'
+import { useUserStoreWithOut } from '@/store/modules/user'
 
 export const PATH_URL = import.meta.env.VITE_API_BASE_PATH
 
@@ -34,7 +35,31 @@ axiosInstance.interceptors.response.use(
   },
   (error: AxiosError) => {
     console.log('err： ' + error) // for debug
-    ElMessage.error(error.message)
+    
+    // Handle Laravel API error responses
+    if (error.response) {
+      const { status, data } = error.response
+      
+      if (status === 401) {
+        // Handle unauthorized access
+        ElMessage.error('Authentication failed. Please login again.')
+        const userStore = useUserStoreWithOut()
+        userStore.logout()
+      } else if (status === 422) {
+        // Handle validation errors
+        const validationErrors = data.errors || {}
+        const firstError = Object.values(validationErrors)[0] as string[]
+        ElMessage.error(firstError?.[0] || data.message || 'Validation error')
+      } else {
+        // Handle other HTTP errors
+        const errorMessage = data.message || data.error || error.message || 'An error occurred'
+        ElMessage.error(errorMessage)
+      }
+    } else {
+      // Handle network errors
+      ElMessage.error(error.message || 'Network error')
+    }
+    
     return Promise.reject(error)
   }
 )
