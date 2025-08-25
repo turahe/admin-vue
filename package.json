@@ -28,6 +28,7 @@
     "icon": "esno ./scripts/icon.ts"
   },
   "dependencies": {
+    "@eslint/js": "^9.34.0",
     "@iconify/iconify": "^3.1.1",
     "@iconify/vue": "^5.0.0",
     "@vueuse/core": "^13.7.0",
@@ -53,6 +54,7 @@
     "url": "^0.11.4",
     "vue": "3.5.19",
     "vue-draggable-plus": "^0.6.0",
+    "vue-eslint-parser": "^10.2.0",
     "vue-i18n": "11.1.11",
     "vue-json-pretty": "^2.5.0",
     "vue-router": "^4.5.1",
