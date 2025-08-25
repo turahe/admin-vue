@@ -84,6 +84,7 @@
     "@vitejs/plugin-legacy": "^7.2.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^5.0.1",
+    "@vitest/coverage-v8": "^2.1.8",
     "autoprefixer": "^10.4.21",
     "chalk": "^5.6.0",
     "consola": "^3.4.2",
@@ -96,6 +97,7 @@
     "fs-extra": "^11.3.1",
     "husky": "^9.1.7",
     "inquirer": "^12.9.4",
+    "jsdom": "^26.1.0",
     "less": "^4.4.1",
     "lint-staged": "^16.1.5",
     "plop": "^4.0.1",
@@ -123,9 +125,8 @@
     "vite-plugin-style-import": "2.0.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-url-copy": "^1.1.4",
-    "vue-tsc": "^3.0.6",
     "vitest": "^2.1.8",
-    "@vitest/coverage-v8": "^2.1.8"
+    "vue-tsc": "^3.0.6"
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {

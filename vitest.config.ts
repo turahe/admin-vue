@@ -4,20 +4,17 @@ import path from 'path'
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
-    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    environment: 'jsdom',
+    include: [
+      'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      'scripts/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+    ],
     exclude: ['node_modules', 'dist', '.git', '.cache'],
+    setupFiles: [],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'test/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        'coverage/**',
-        'dist/**'
-      ]
+      exclude: ['node_modules/', 'tests/', '**/*.d.ts', '**/*.config.*', 'coverage/**', 'dist/**']
     }
   },
   resolve: {
