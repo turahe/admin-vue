@@ -62,6 +62,7 @@ describe('Axios Service', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.resetModules()
 
     mockUserStore = {
       logout: vi.fn()
@@ -77,7 +78,7 @@ describe('Axios Service', () => {
           use: vi.fn()
         }
       },
-      request: vi.fn()
+      request: vi.fn().mockResolvedValue({ data: 'success' })
     }
     mockAxios.create.mockReturnValue(mockAxiosInstance)
   })
@@ -109,7 +110,6 @@ describe('Axios Service', () => {
     let service: any
 
     beforeEach(async () => {
-      mockAxiosInstance.request.mockResolvedValue({ data: 'success' })
       const serviceModule = await import('../../src/axios/service')
       service = serviceModule.default
     })
