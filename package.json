@@ -25,7 +25,11 @@
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.cjs",
     "prepare": "husky install",
     "p": "plop",
-    "icon": "esno ./scripts/icon.ts"
+    "icon": "esno ./scripts/icon.ts",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@eslint/js": "^9.34.0",
@@ -119,7 +123,9 @@
     "vite-plugin-style-import": "2.0.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-url-copy": "^1.1.4",
-    "vue-tsc": "^3.0.6"
+    "vue-tsc": "^3.0.6",
+    "vitest": "^2.1.8",
+    "@vitest/coverage-v8": "^2.1.8"
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {

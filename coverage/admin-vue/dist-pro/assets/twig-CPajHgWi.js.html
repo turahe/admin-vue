@@ -1,0 +1,103 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for admin-vue/dist-pro/assets/twig-CPajHgWi.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">admin-vue/dist-pro/assets</a> twig-CPajHgWi.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/6</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/6</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >/*!-----------------------------------------------------------------------------<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cstat-no" title="statement not covered" > * Copyright (c) Microsoft Corporation. All rights reserved.</span>
+<span class="cstat-no" title="statement not covered" > * Version: 0.52.2(404545bded1df6ffa41ea0af4e8ddb219018c6c1)</span>
+<span class="cstat-no" title="statement not covered" > * Released under the MIT license</span>
+<span class="cstat-no" title="statement not covered" > * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt</span>
+<span class="cstat-no" title="statement not covered" > *-----------------------------------------------------------------------------*/var t={wordPattern:/(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&amp;\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\&lt;\&gt;\/\s]+)/g,comments:{blockComment:["{#","#}"]},brackets:[["{#","#}"],["{%","%}"],["{{","}}"],["(",")"],["[","]"],["&lt;!--","--&gt;"],["&lt;","&gt;"]],autoClosingPairs:[{open:"{# ",close:" #}"},{open:"{% ",close:" %}"},{open:"{{ ",close:" }}"},{open:"[",close:"]"},{open:"(",close:")"},{open:'"',close:'"'},{open:"'",close:"'"}],surroundingPairs:[{open:'"',close:'"'},{open:"'",close:"'"},{open:"&lt;",close:"&gt;"}]},e={defaultToken:"",tokenPostfix:"",ignoreCase:!0,keywords:["apply","autoescape","block","deprecated","do","embed","extends","flush","for","from","if","import","include","macro","sandbox","set","use","verbatim","with","endapply","endautoescape","endblock","endembed","endfor","endif","endmacro","endsandbox","endset","endwith","true","false"],tokenizer:{root:[[/\s+/],[/{#/,"comment.twig","@commentState"],[/{%[-~]?/,"delimiter.twig","@blockState"],[/{{[-~]?/,"delimiter.twig","@variableState"],[/&lt;!DOCTYPE/,"metatag.html","@doctype"],[/&lt;!--/,"comment.html","@comment"],[/(&lt;)((?:[\w\-]+:)?[\w\-]+)(\s*)(\/&gt;)/,["delimiter.html","tag.html","","delimiter.html"]],[/(&lt;)(script)/,["delimiter.html",{token:"tag.html",next:"@script"}]],[/(&lt;)(style)/,["delimiter.html",{token:"tag.html",next:"@style"}]],[/(&lt;)((?:[\w\-]+:)?[\w\-]+)/,["delimiter.html",{token:"tag.html",next:"@otherTag"}]],[/(&lt;\/)((?:[\w\-]+:)?[\w\-]+)/,["delimiter.html",{token:"tag.html",next:"@otherTag"}]],[/&lt;/,"delimiter.html"],[/[^&lt;{]+/]],commentState:[[/#}/,"comment.twig","@pop"],[/./,"comment.twig"]],blockState:[[/[-~]?%}/,"delimiter.twig","@pop"],[/\s+/],[/(verbatim)(\s*)([-~]?%})/,["keyword.twig","",{token:"delimiter.twig",next:"@rawDataState"}]],{include:"expression"}],rawDataState:[[/({%[-~]?)(\s*)(endverbatim)(\s*)([-~]?%})/,["delimiter.twig","","keyword.twig","",{token:"delimiter.twig",next:"@popall"}]],[/./,"string.twig"]],variableState:[[/[-~]?}}/,"delimiter.twig","@pop"],{include:"expression"}],stringState:[[/"/,"string.twig","@pop"],[/#{\s*/,"string.twig","@interpolationState"],[/[^#"\\]*(?:(?:\\.|#(?!\{))[^#"\\]*)*/,"string.twig"]],interpolationState:[[/}/,"string.twig","@pop"],{include:"expression"}],expression:[[/\s+/],[/\+|-|\/{1,2}|%|\*{1,2}/,"operators.twig"],[/(and|or|not|b-and|b-xor|b-or)(\s+)/,["operators.twig",""]],[/==|!=|&lt;|&gt;|&gt;=|&lt;=/,"operators.twig"],[/(starts with|ends with|matches)(\s+)/,["operators.twig",""]],[/(in)(\s+)/,["operators.twig",""]],[/(is)(\s+)/,["operators.twig",""]],[/\||~|:|\.{1,2}|\?{1,2}/,"operators.twig"],[/[^\W\d][\w]*/,{cases:{"@keywords":"keyword.twig","@default":"variable.twig"}}],[/\d+(\.\d+)?/,"number.twig"],[/\(|\)|\[|\]|{|}|,/,"delimiter.twig"],[/"([^#"\\]*(?:\\.[^#"\\]*)*)"|\'([^\'\\]*(?:\\.[^\'\\]*)*)\'/,"string.twig"],[/"/,"string.twig","@stringState"],[/=&gt;/,"operators.twig"],[/=/,"operators.twig"]],doctype:[[/[^&gt;]+/,"metatag.content.html"],[/&gt;/,"metatag.html","@pop"]],comment:[[/--&gt;/,"comment.html","@pop"],[/[^-]+/,"comment.content.html"],[/./,"comment.content.html"]],otherTag:[[/\/?&gt;/,"delimiter.html","@pop"],[/"([^"]*)"/,"attribute.value.html"],[/'([^']*)'/,"attribute.value.html"],[/[\w\-]+/,"attribute.name.html"],[/=/,"delimiter.html"],[/[ \t\r\n]+/]],script:[[/type/,"attribute.name.html","@scriptAfterType"],[/"([^"]*)"/,"attribute.value.html"],[/'([^']*)'/,"attribute.value.html"],[/[\w\-]+/,"attribute.name.html"],[/=/,"delimiter.html"],[/&gt;/,{token:"delimiter.html",next:"@scriptEmbedded",nextEmbedded:"text/javascript"}],[/[ \t\r\n]+/],[/(&lt;\/)(script\s*)(&gt;)/,["delimiter.html","tag.html",{token:"delimiter.html",next:"@pop"}]]],scriptAfterType:[[/=/,"delimiter.html","@scriptAfterTypeEquals"],[/&gt;/,{token:"delimiter.html",next:"@scriptEmbedded",nextEmbedded:"text/javascript"}],[/[ \t\r\n]+/],[/&lt;\/script\s*&gt;/,{token:"@rematch",next:"@pop"}]],scriptAfterTypeEquals:[[/"([^"]*)"/,{token:"attribute.value.html",switchTo:"@scriptWithCustomType.$1"}],[/'([^']*)'/,{token:"attribute.value.html",switchTo:"@scriptWithCustomType.$1"}],[/&gt;/,{token:"delimiter.html",next:"@scriptEmbedded",nextEmbedded:"text/javascript"}],[/[ \t\r\n]+/],[/&lt;\/script\s*&gt;/,{token:"@rematch",next:"@pop"}]],scriptWithCustomType:[[/&gt;/,{token:"delimiter.html",next:"@scriptEmbedded.$S2",nextEmbedded:"$S2"}],[/"([^"]*)"/,"attribute.value.html"],[/'([^']*)'/,"attribute.value.html"],[/[\w\-]+/,"attribute.name.html"],[/=/,"delimiter.html"],[/[ \t\r\n]+/],[/&lt;\/script\s*&gt;/,{token:"@rematch",next:"@pop"}]],scriptEmbedded:[[/&lt;\/script/,{token:"@rematch",next:"@pop",nextEmbedded:"@pop"}],[/[^&lt;]+/,""]],style:[[/type/,"attribute.name.html","@styleAfterType"],[/"([^"]*)"/,"attribute.value.html"],[/'([^']*)'/,"attribute.value.html"],[/[\w\-]+/,"attribute.name.html"],[/=/,"delimiter.html"],[/&gt;/,{token:"delimiter.html",next:"@styleEmbedded",nextEmbedded:"text/css"}],[/[ \t\r\n]+/],[/(&lt;\/)(style\s*)(&gt;)/,["delimiter.html","tag.html",{token:"delimiter.html",next:"@pop"}]]],styleAfterType:[[/=/,"delimiter.html","@styleAfterTypeEquals"],[/&gt;/,{token:"delimiter.html",next:"@styleEmbedded",nextEmbedded:"text/css"}],[/[ \t\r\n]+/],[/&lt;\/style\s*&gt;/,{token:"@rematch",next:"@pop"}]],styleAfterTypeEquals:[[/"([^"]*)"/,{token:"attribute.value.html",switchTo:"@styleWithCustomType.$1"}],[/'([^']*)'/,{token:"attribute.value.html",switchTo:"@styleWithCustomType.$1"}],[/&gt;/,{token:"delimiter.html",next:"@styleEmbedded",nextEmbedded:"text/css"}],[/[ \t\r\n]+/],[/&lt;\/style\s*&gt;/,{token:"@rematch",next:"@pop"}]],styleWithCustomType:[[/&gt;/,{token:"delimiter.html",next:"@styleEmbedded.$S2",nextEmbedded:"$S2"}],[/"([^"]*)"/,"attribute.value.html"],[/'([^']*)'/,"attribute.value.html"],[/[\w\-]+/,"attribute.name.html"],[/=/,"delimiter.html"],[/[ \t\r\n]+/],[/&lt;\/style\s*&gt;/,{token:"@rematch",next:"@pop"}]],styleEmbedded:[[/&lt;\/style/,{token:"@rematch",next:"@pop",nextEmbedded:"@pop"}],[/[^&lt;]+/,""]]}};export{t as conf,e as language};</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-08-25T04:37:24.182Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    

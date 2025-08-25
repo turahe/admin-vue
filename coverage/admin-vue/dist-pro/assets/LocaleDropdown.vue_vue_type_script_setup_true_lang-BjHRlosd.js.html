@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for admin-vue/dist-pro/assets/LocaleDropdown.vue_vue_type_script_setup_true_lang-BjHRlosd.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">admin-vue/dist-pro/assets</a> LocaleDropdown.vue_vue_type_script_setup_true_lang-BjHRlosd.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >var C=(t,a,s)=&gt;new Promise((n,i)=&gt;{var u=o=&gt;{try{e(s.next(o))}catch(c){i(c)}},m=o=&gt;{try{e(s.throw(o))}catch(c){i(c)}},e=o=&gt;o.done?n(o.value):Promise.resolve(o.value).then(u,m);e((s=s.apply(t,a)).next())});import{b as D,u as S,o as k,_ as x,q as d,s as T,t as g,e as V,v as M,p as P,w as y}from"./index-BEu9Qr3B.js";import"./Form-B_DENmkD.js";import{u as w}from"./useIcon-BT9sloi0.js";import{K as O,L as z,M as A,N}from"./element-plus-BmofUjmf.js";import{x as b,c as L,K as v,z as _,u as l,J as h,ai as R,L as p,V as I,y as j,I as B,a4 as H,a5 as $,P as K}from"./vue-chunks-Cb_T6hIW.js";/* empty css                         *//* empty css                  */const f="var(--el-color-black)",q=b({__name:"ThemeSwitch",emits:["change"],setup(t,{emit:a}){const{getPrefixCls:s}=D(),n=a,i=s("theme-switch"),u=w({icon:"vi-emojione-monotone:sun",color:"#fde047"}),m=w({icon:"vi-emojione-monotone:crescent-moon",color:"#fde047"}),e=S(),o=L({get(){return e.getIsDark},set(c){e.setIsDark(c);const r=k("--el-bg-color");e.setMenuTheme(r),e.setHeaderTheme(r),n("change",c)}});return(c,r)=&gt;(_(),v(l(O),{class:h(l(i)),modelValue:o.value,"onUpdate:modelValue":r[0]||(r[0]=E=&gt;o.value=E),"inline-prompt":"","border-color":f,"inactive-color":f,"active-color":f,"active-icon":l(u),"inactive-icon":l(m)},null,8,["class","modelValue","active-icon","inactive-icon"]))}}),oe=x(q,[["__scopeId","data-v-0c8acad6"]]),F=t=&gt;{const a=V();d.mode==="legacy"?d.global.locale=t:d.global.locale.value=t,a.setCurrentLocale({lang:t}),M(t)},J=()=&gt;({changeLocale:a=&gt;C(null,null,function*(){const s=d.global,n=yield T(Object.assign({"../../locales/en.ts":()=&gt;g(()=&gt;import("./en-7-I9LYwr.js"),[]),"../../locales/id.ts":()=&gt;g(()=&gt;import("./id-jfh9LDO4.js"),[]),"../../locales/zh-CN.ts":()=&gt;g(()=&gt;import("./zh-CN-CzSDTAbL.js"),[])}),`../../locale</span></span>s/${a}.ts`,4);s.setLocaleMessage(a,n.default),F(a)})}),ae=b({__name:"LocaleDropdown",props:{color:P.string.def("")},setup(t){const{getPrefixCls:a}=D(),s=a("locale-dropdown"),n=y(),i=L(()=&gt;n.getLocaleMap),u=L(()=&gt;n.getCurrentLocale),m=e=&gt;{if(e===l(u).lang)return;window.location.reload(),n.setCurrentLocale({lang:e});const{changeLocale:o}=J();o(e)};return(e,o)=&gt;{const c=R("Icon");return _(),v(l(N),{class:h(l(s)),trigger:"click",onCommand:m},{dropdown:p(()=&gt;[I(l(z),null,{default:p(()=&gt;[(_(!0),j(B,null,H(i.value,r=&gt;(_(),v(l(A),{key:r.lang,command:r.lang},{default:p(()=&gt;[$(K(r.name),1)]),_:2},1032,["command"]))),128))]),_:1})]),default:p(()=&gt;[I(c,{size:18,icon:"vi-ion:language-sharp",class:h(["cursor-pointer !p-0",e.$attrs.class]),color:t.color},null,8,["class","color"])]),_:1},8,["class"])}}});export{oe as T,ae as _};</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-08-25T04:37:24.182Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    

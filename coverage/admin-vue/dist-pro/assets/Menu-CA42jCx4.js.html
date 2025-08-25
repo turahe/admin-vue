@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for admin-vue/dist-pro/assets/Menu-CA42jCx4.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">admin-vue/dist-pro/assets</a> Menu-CA42jCx4.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >var V=(i,t,s)=&gt;new Promise((x,g)=&gt;{var w=r=&gt;{try{f(s.next(r))}catch(_){g(_)}},D=r=&gt;{try{f(s.throw(r))}catch(_){g(_)}},f=r=&gt;r.done?x(r.value):Promise.resolve(r.value).then(w,D);f((s=s.apply(i,t)).next())});import{g as O}from"./index-BNJT7Mkr.js";import{u as z}from"./useTable-o8kWxiOW.js";import{a as F,I as H,h as c}from"./index-BEu9Qr3B.js";import{_ as K}from"./Table.vue_vue_type_script_lang-D43owYKz.js";/* empty css               */import{_ as U}from"./Search.vue_vue_type_script_setup_true_lang-KnaS0XXG.js";import{_ as q}from"./ContentWrap.vue_vue_type_script_setup_true_lang-BgEaYxDA.js";import{_ as G}from"./Write.vue_vue_type_script_setup_true_lang-DaGX0R_l.js";import{_ as J}from"./Detail.vue_vue_type_script_setup_true_lang-DThUbfTe.js";import{_ as Q}from"./Dialog.vue_vue_type_style_index_0_lang-CZsuAKnZ.js";import{r as W}from"./element-plus-BmofUjmf.js";import{x as X,l as j,V as a,I as p,r as n,y as Y,z as y,L as d,u as l,C as Z,a5 as $,P as N,K as R,H as S,a7 as ee}from"./vue-chunks-Cb_T6hIW.js";/* empty css                        *//* empty css                    *//* empty css                  *//* empty css                      *//* empty css                  *//* empty css                 *//* empty css                        *//* empty css                */import"./el-radio-button-CL9RaSbv.js";/* empty css                         *//* empty css                          *//* empty css                */import"./index-Bz5REIPY.js";import"./Form-B_DENmkD.js";/* empty css                     *//* empty css               *//* empty css                        *//* empty css                   *//* empty css                *//* empty css                    */import"./InputPassword-xW692clz.js";import"./style.css_vue_type_style_index_0_src_true_lang-DIBy_A1S.js";import"./wang-editor-D0UI6g6R.js";import"./JsonEditor.vue_vue_type_script_setup_true_lang-b5wbeTKu.js";import"./IconPicker-DJ34ljX_.js";import"./IAgree.vue_vue_type_script_setup_true_lang-Cek80fRa.js";import"./Highlight.vue_vue_type_script_lang-Cwb76EEE.js";import"./useForm-CCE0J8jW.js";import"./useIcon-BT9sloi0.js";import"./useValidator-Bqj8vU0a.js";import"./AddButtonPermission.vue_vue_type_script_setup_true_lang-CQGxW4pS.js";import"./Descriptions-nrFrSZwp.js";const te={class:"mb-10px"};function T(i){return typeof i=="function"||Object.prototype.toString.call(i)==="[object Object]"&amp;&amp;!ee(i)}const Ge=X({__name:"Menu",setup(i){const{t}=F(),{tableRegister:s,tableState:x,tableMethods:g}=z({fetchDataApi:()=&gt;V(null,null,function*(){return{list:(yield O()).data.list||[]}})}),{dataList:w,loading:D}=x,{getList:f}=g,r=j([{field:"index",label:t("userDemo.index"),type:"index"},{field:"meta.title",label:t("menu.menuName"),slots:{default:o=&gt;{const e=o.row.meta.title;return a(p,null,[e])}}},{field:"meta.icon",label:t("menu.icon"),slots:{default:o=&gt;{const e=o.row.meta.icon;return e?a(p,null,[a(H,{icon:e},null)]):null}}},{field:"component",label:t("menu.component"),slots:{default:o=&gt;{const e=o.row.component;return a(p,null,[e==="#"?"顶级目录":e==="##"?"子目录":e])}}},{field:"path",label:t("menu.path")},{field:"status",label:t("menu.status"),slots:{default:o=&gt;a(p,null,[a(W,{type:o.row.status===0?"danger":"success"},{default:()=&gt;[o.row.status===1?t("userDemo.enable"):t("userDemo.disable")]})])}},{field:"action",label:t("userDemo.action"),width:240,slots:{default:o=&gt;{let e,u,C;const B=o.row;return a(p,null,[a</span></span>(c,{type:"primary",onClick:()=&gt;A(B,"edit")},T(e=t("exampleDemo.edit"))?e:{default:()=&gt;[e]}),a(c,{type:"success",onClick:()=&gt;A(B,"detail")},T(u=t("exampleDemo.detail"))?u:{default:()=&gt;[u]}),a(c,{type:"danger"},T(C=t("exampleDemo.del"))?C:{default:()=&gt;[C]})])}}}]),_=j([{field:"meta.title",label:t("menu.menuName"),component:"Input"}]),M=n({}),I=o=&gt;{M.value=o,f()},m=n(!1),k=n(""),b=n(),v=n(""),L=n(),h=n(!1),A=(o,e)=&gt;{k.value=t(e==="edit"?"exampleDemo.edit":"exampleDemo.detail"),v.value=e,b.value=o,m.value=!0},P=()=&gt;{k.value=t("exampleDemo.add"),b.value=void 0,m.value=!0,v.value=""},E=()=&gt;V(null,null,function*(){const o=l(L),e=yield o==null?void 0:o.submit();e&amp;&amp;(h.value=!0,setTimeout(()=&gt;{h.value=!1,m.value=!1},1e3))});return(o,e)=&gt;(y(),Y(p,null,[a(l(q),null,{default:d(()=&gt;[a(l(U),{schema:_,onReset:I,onSearch:I},null,8,["schema"]),Z("div",te,[a(l(c),{type:"primary",onClick:P},{default:d(()=&gt;[$(N(l(t)("exampleDemo.add")),1)]),_:1})]),a(l(K),{columns:r,"default-expand-all":"","node-key":"id",data:l(w),loading:l(D),onRegister:l(s)},null,8,["columns","data","loading","onRegister"])]),_:1}),a(l(Q),{modelValue:m.value,"onUpdate:modelValue":e[1]||(e[1]=u=&gt;m.value=u),title:k.value},{footer:d(()=&gt;[v.value!=="detail"?(y(),R(l(c),{key:0,type:"primary",loading:h.value,onClick:E},{default:d(()=&gt;[$(N(l(t)("exampleDemo.save")),1)]),_:1},8,["loading"])):S("",!0),a(l(c),{onClick:e[0]||(e[0]=u=&gt;m.value=!1)},{default:d(()=&gt;[$(N(l(t)("dialogDemo.close")),1)]),_:1})]),default:d(()=&gt;[v.value!=="detail"?(y(),R(G,{key:0,ref_key:"writeRef",ref:L,"current-row":b.value},null,8,["current-row"])):S("",!0),v.value==="detail"?(y(),R(J,{key:1,"current-row":b.value},null,8,["current-row"])):S("",!0)]),_:1},8,["modelValue","title"])],64))}});export{Ge as default};</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-08-25T04:37:24.182Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    

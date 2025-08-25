@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for admin-vue/dist-pro/assets/Request-BgcfMt7U.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">admin-vue/dist-pro/assets</a> Request-BgcfMt7U.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >var q=(k,m,e)=&gt;new Promise((p,i)=&gt;{var f=a=&gt;{try{c(e.next(a))}catch(d){i(d)}},y=a=&gt;{try{c(e.throw(a))}catch(d){i(d)}},c=a=&gt;a.done?p(a.value):Promise.resolve(a.value).then(f,y);c((e=e.apply(k,m)).next())});import{_ as A}from"./ContentWrap.vue_vue_type_script_setup_true_lang-BgEaYxDA.js";import{r as s,a as V}from"./index-BEu9Qr3B.js";/* empty css                   */import{n as h}from"./element-plus-BmofUjmf.js";import{x as E,r as N,K as D,z as S,L as l,u as v,C as T,V as n,P as z,a5 as o,ai as I}from"./vue-chunks-Cb_T6hIW.js";/* empty css                *//* empty css                  */const K=()=&gt;s.get({url:"/mock/request/1"}),L=()=&gt;s.get({url:"/mock/request/2"}),P=()=&gt;s.get({url:"/mock/request/3"}),$=()=&gt;s.get({url:"/mock/request/4"}),b=()=&gt;s.get({url:"/mock/request/5"}),j=()=&gt;s.get({url:"/mock/request/expired"}),W=E({__name:"Request",setup(k){const{t:m}=V(),e=N(new Set),p=()=&gt;q(null,null,function*(){if(!e.value.has("/request/1"))try{e.value.add("/request/1");const r=yield K()}catch(r){}finally{e.value.delete("/request/1")}}),i=()=&gt;q(null,null,function*(){if(!e.value.has("/request/2"))try{e.value.add("/request/2");const r=yield L()}catch(r){}finally{e.value.delete("/request/2")}}),f=()=&gt;q(null,null,function*(){if(!e.value.has("/request/3"))try{e.value.add("/request/3");const r=yield P()}catch(r){}finally{e.value.delete("/request/3")}}),y=()=&gt;q(null,null,function*(){if(!e.value.has("/request/4"))try{e.value.add("/request/4");const r=yield $()}catch(r){}finally{e.value.delete("/request/4")}}),c=()=&gt;q(null,null,function*(){if(!e.value.has("/request/5"))try{e.value.add("/request/5");const r=yield b()}catch(r){}finally{e.value.delete("/request/5")}}),a=()=&gt;{p(),i(),f(),y(),c()},d=()=&gt;{s.cancelAllRequest(),e.value.clear()},g=r=&gt;{const t=[];return r.forEach(u=&gt;{t.push(u)}),t},R=()=&gt;{if(e.value.has("/request/1")){s.cancelRequest("/request/1"),e.value.delete("/request/1");return}p()},C=()=&gt;{if(e.value.has("/request/2")){s.cancelRequest("/request/2"),e.value.delete("/request/2");return}i()},x=()=&gt;{if(e.value.has("/request/3")){s.cancelRequest("/request/3"),e.value.delete("/request/3");return}f()},w=()=&gt;{if(e.value.has("/request/4")){s.cancelRequest("/request/4"),e.value.delete("/request/4");return}y()},B=()=&gt;{if(e.value.has("/request/5")){s.cancelRequest("/request/5"),e.value.delete("/request/5");return}c()},_=()=&gt;{j()};return(r,t)=&gt;{const u=I("BaseButton");return S(),D(v(A),{title:v(m)("router.request")},{default:l(()=&gt;[T("p",null,"正在请求的接口："+z(g(e.value)),1),n(u,{type:"primary",onClick:R},{default:l(()=</span></span>&gt;[...t[0]||(t[0]=[o("请求/取消request1",-1)])]),_:1}),n(u,{type:"primary",onClick:C},{default:l(()=&gt;[...t[1]||(t[1]=[o("请求/取消request2",-1)])]),_:1}),n(u,{type:"primary",onClick:x},{default:l(()=&gt;[...t[2]||(t[2]=[o("请求/取消request3",-1)])]),_:1}),n(u,{type:"primary",onClick:w},{default:l(()=&gt;[...t[3]||(t[3]=[o("请求/取消request4",-1)])]),_:1}),n(u,{type:"primary",onClick:B},{default:l(()=&gt;[...t[4]||(t[4]=[o("请求/取消request5",-1)])]),_:1}),n(u,{type:"primary",onClick:a},{default:l(()=&gt;[...t[5]||(t[5]=[o("发送五个请求",-1)])]),_:1}),n(u,{type:"primary",onClick:d},{default:l(()=&gt;[...t[6]||(t[6]=[o("关闭所有请求",-1)])]),_:1}),n(v(h)),n(u,{type:"primary",onClick:_},{default:l(()=&gt;[...t[7]||(t[7]=[o("token过期",-1)])]),_:1})]),_:1},8,["title"])}}});export{W as default};</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-08-25T04:37:24.182Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    

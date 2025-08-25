@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for admin-vue/dist-pro/assets/Search.vue_vue_type_script_setup_true_lang-KnaS0XXG.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">admin-vue/dist-pro/assets</a> Search.vue_vue_type_script_setup_true_lang-KnaS0XXG.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >var X=Object.defineProperty;var _=Object.getOwnPropertySymbols;var Y=Object.prototype.hasOwnProperty,Z=Object.prototype.propertyIsEnumerable;var D=(o,r,a)=&gt;r in o?X(o,r,{enumerable:!0,configurable:!0,writable:!0,value:a}):o[r]=a,T=(o,r)=&gt;{for(var a in r||(r={}))Y.call(r,a)&amp;&amp;D(o,a,r[a]);if(_)for(var a of _(r))Z.call(r,a)&amp;&amp;D(o,a,r[a]);return o};var g=(o,r,a)=&gt;new Promise((u,h)=&gt;{var m=d=&gt;{try{b(a.next(d))}catch(p){h(p)}},f=d=&gt;{try{b(a.throw(d))}catch(p){h(p)}},b=d=&gt;d.done?u(d.value):Promise.resolve(d.value).then(m,f);b((a=a.apply(o,r)).next())});import{F as ee,i as oe}from"./Form-B_DENmkD.js";import{p as i,a as te,A as W,B as se,C as ae}from"./index-BEu9Qr3B.js";import{u as ne}from"./useForm-CCE0J8jW.js";import{u as L}from"./useIcon-BT9sloi0.js";import{x as z,y as F,z as w,I as H,K as R,H as x,L as V,a5 as S,P as C,u as n,ai as ie,r as v,c as B,V as y,w as le,j as re,Q as ce}from"./vue-chunks-Cb_T6hIW.js";import{c as de,s as ue}from"./element-plus-BmofUjmf.js";const q=z({__name:"ActionButton",props:{showSearch:i.bool.def(!0),showReset:i.bool.def(!0),showExpand:i.bool.def(!1),visible:i.bool.def(!0),searchLoading:i.bool.def(!1),resetLoading:i.bool.def(!1)},emits:["search","reset","expand"],setup(o,{emit:r}){const a=r,{t:u}=te(),h=()=&gt;{a("search")},m=()=&gt;{a("reset")},f=()=&gt;{a("expand")};return(b,d)=&gt;{const p=ie("BaseButton");return w(),F(H,null,[o.showSearch?(w(),R(p,{key:0,type:"primary",loading:o.searchLoading,icon:n(L)({icon:"vi-ep:search"}),onClick:h},{default:V(()=&gt;[S(C(n(u)("common.query")),1)]),_:1},8,["loading","icon"])):x("",!0),o.showReset?(w(),R(p,{key:1,loading:o.resetLoading,plain:"",icon:n(L)({icon:"vi-ep:refresh-right"}),onClick:m},{default:V(()=&gt;[S(C(n(u)("common.reset")),1)]),_:1},8,["loading","icon"])):x("",!0),o.showExpand?(w(),R(p,{key:2,icon:n(L)({icon:o.visible?"vi-ep:arrow-up":"vi-ep:arrow-down"}),text:"",onClick:f},{default:V(()=&gt;[S(C(n(u)(o.visible?"common.shrink":"common.expand")),1)]),_:1},8,["icon"])):x("",!0)],64)}}}),ke=z({__name:"Search",props:{schema:{type:Array,default:()=&gt;[]},isCol:i.bool.def(!1),labelWidth:i.oneOfType([String,Number]).def("auto"),layout:i.string.validate(o=&gt;["inline","bottom"].includes(o)).def("inline"),buttonPosition:i.string.validate(o=&gt;["left","center","right"].includes(o)).def("center"),showSearch:i.bool.def(!0),showReset:i.bool.def(!0),showExpand:i.bool.def(!1),expandField:i.string.def(""),inline:i.bool.def(!0),removeNoValueItem:i.bool.def(!0),model:{type:Object,default:()=&gt;({})},searchLoading:i.bool.def(!1),resetLoading:i.bool.def(!1)},emits:["search","reset","register","validate"],setup(o,{expose:r,emit:a}){const u=o,h=a,m=v(!0),f=v(u.model),b=B(()=&gt;{const e=n(c);let t=de(e.schema);if(e.showExpand&amp;&amp;e.expandField&amp;&amp;!n(m)){const s=W(t,l=&gt;l.field===e.expandField);t.map((l,U)=&gt;(U&gt;=s?l.hidden=!0:l.hidden=!1,l))}return e.layout==="inline"&amp;&amp;(t=t.concat([{field:"action",formItemProps:{labelWidth:"0px",slots:{default:()=&gt;y("div",null,[y(q,{showSearch:e.showSearch,showReset:e.showReset,showExpand:e.showExpand,searchLoading:e.searchLoading,resetLoading:e.resetLoading,visible:m.value,onExpand:A,onReset:N,onSearch:I},null)]),label:()=&gt;y("span",null,[S(" ")])}}}])),t}),{formRegister:d,formMethods:p}=ne(),{getElFormExpose:k,getFormData:j,getFormExpose:K}=p,Q=v({}),E=v({}),c=B(()=&gt;{const e=T({},u);return Object.assign(e,n(E)),e}),$=(e={})=&gt;{E.value=Object.assign(n(E),e),Q.value=e},O=v([]);le(()=&gt;n(b),(...t)=&gt;g(null,[...t],function*(e=[]){f.value=oe(e,n(</span></span>f)),O.value=e}),{immediate:!0,deep:!0});const P=()=&gt;g(null,null,function*(){const e=yield j();return n(c).removeNoValueItem?Object.keys(e).reduce((t,s)=&gt;{const l=e[s];return se(l)||(ae(l)?Object.keys(l).length&gt;0&amp;&amp;(t[s]=l):t[s]=l),t},{}):e}),I=()=&gt;g(null,null,function*(){const e=yield k();yield e==null?void 0:e.validate(t=&gt;g(null,null,function*(){if(t){const s=yield P();h("search",s)}}))}),N=()=&gt;g(null,null,function*(){const e=yield k();e==null||e.resetFields();const t=yield P();h("reset",t)}),G=B(()=&gt;({textAlign:n(c).buttonPosition})),A=()=&gt;g(null,null,function*(){m.value=!n(m)}),M={getElFormExpose:k,setProps:$,setSchema:e=&gt;{const{schema:t}=n(c);for(const s of t)for(const l of e)s.field===l.field&amp;&amp;ue(s,l.path,l.value)},setValues:(...t)=&gt;g(null,[...t],function*(e={}){f.value=Object.assign(u.model,n(f),e);const s=yield K();s==null||s.setValues(e)}),delSchema:e=&gt;{const{schema:t}=n(c),s=W(t,l=&gt;l.field===e);s&gt;-1&amp;&amp;t.splice(s,1)},addSchema:(e,t)=&gt;{const{schema:s}=n(c);if(t!==void 0){s.splice(t,0,e);return}s.push(e)},getFormData:j};re(()=&gt;{h("register",M)}),r(M);const J=(e,t,s)=&gt;{h("validate",e,t,s)};return(e,t)=&gt;(w(),F(H,null,[y(n(ee),{model:f.value,"is-custom":!1,"label-width":c.value.labelWidth,"hide-required-asterisk":"",inline:c.value.inline,"is-col":c.value.isCol,schema:O.value,onRegister:n(d),onValidate:J},null,8,["model","label-width","inline","is-col","schema","onRegister"]),o.layout==="bottom"?(w(),F("div",{key:0,style:ce(G.value)},[y(q,{"show-reset":c.value.showReset,"show-search":c.value.showSearch,"show-expand":c.value.showExpand,"search-loading":c.value.searchLoading,"reset-loading":c.value.resetLoading,visible:m.value,onExpand:A,onReset:N,onSearch:I},null,8,["show-reset","show-search","show-expand","search-loading","reset-loading","visible"])],4)):x("",!0)],64))}});export{ke as _};</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-08-25T04:37:24.182Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    
