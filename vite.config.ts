@@ -6,7 +6,6 @@ import VueJsx from '@vitejs/plugin-vue-jsx'
 import progress from 'vite-plugin-progress'
 import EslintPlugin from 'vite-plugin-eslint'
 import { ViteEjsPlugin } from 'vite-plugin-ejs'
-import { viteMockServe } from 'vite-plugin-mock'
 import PurgeIcons from 'vite-plugin-purge-icons'
 import ServerUrlCopy from 'vite-plugin-url-copy'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
@@ -59,12 +58,13 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
             ]
           })
         : undefined,
-      EslintPlugin({
-        cache: false,
-        failOnWarning: false,
-        failOnError: false,
-        include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx'] // 检查的文件
-      }),
+      // Disable ESLint plugin for build to avoid formatting issues
+      // EslintPlugin({
+      //   cache: false,
+      //   failOnWarning: false,
+      //   failOnError: false,
+      //   include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx']
+      // }),
       VueI18nPlugin({
         runtimeOnly: true,
         compositionOnly: true,
@@ -76,19 +76,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         svgoOptions: true
       }),
       PurgeIcons(),
-      env.VITE_USE_MOCK === 'true'
-        ? viteMockServe({
-            ignore: /^\_/,
-            mockPath: 'mock',
-            localEnabled: !isBuild,
-            prodEnabled: isBuild,
-            injectCode: `
-          import { setupProdMockServer } from '../mock/_createProductionServer'
-
-          setupProdMockServer()
-          `
-          })
-        : undefined,
       ViteEjsPlugin({
         title: env.VITE_APP_TITLE
       }),

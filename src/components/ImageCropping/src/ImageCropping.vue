@@ -2,7 +2,8 @@
 import { useDesign } from '@/hooks/web/useDesign'
 import { nextTick, unref, ref, watch, onBeforeUnmount, onMounted, computed } from 'vue'
 import Cropper from 'cropperjs'
-import 'cropperjs/dist/cropper.min.css'
+// Note: CSS styles for cropperjs should be included in your main CSS file
+// import 'cropperjs/dist/cropper.min.css' // This file doesn't exist in cropperjs v2.x
 import { ElDivider, ElUpload, UploadFile, ElMessage, ElTooltip } from 'element-plus'
 import { useDebounceFn } from '@vueuse/core'
 import { BaseButton } from '@/components/Button'

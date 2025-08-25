@@ -2,27 +2,37 @@
 import { Waterfall } from '@/components/Waterfall'
 import { ContentWrap } from '@/components/ContentWrap'
 import { useI18n } from '@/hooks/web/useI18n'
-import Mock from 'mockjs'
 import { ref, unref } from 'vue'
 import { toAnyString } from '@/utils'
 
 const data = ref<any>([])
 
+/**
+ * Generate random integer between min and max (inclusive)
+ */
+const randomInteger = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+/**
+ * Generate placeholder image URL
+ */
+const generateImageUrl = (width: number, height: number): string => {
+  return `https://picsum.photos/${width}/${height}?random=${Math.random()}`
+}
+
 const getList = () => {
   const list: any = []
   for (let i = 0; i < 20; i++) {
-    // 随机 100, 500 之间的整数
-    const height = Mock.Random.integer(100, 500)
-    const width = Mock.Random.integer(100, 500)
-    list.push(
-      Mock.mock({
-        width,
-        height,
-        id: toAnyString(),
-        // http更换为https
-        image_uri: Mock.Random.image(`${width}x${height}`).replace('http://', 'https://')
-      })
-    )
+    // Generate random dimensions between 100 and 500
+    const height = randomInteger(100, 500)
+    const width = randomInteger(100, 500)
+    list.push({
+      width,
+      height,
+      id: toAnyString(),
+      image_uri: generateImageUrl(width, height)
+    })
   }
   data.value = [...unref(data), ...list]
   if (unref(data).length >= 60) {
