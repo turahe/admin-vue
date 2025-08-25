@@ -1,13 +1,52 @@
-FROM node:18.0.0
+# ===== Dependencies Stage =====
+FROM node:lts-alpine AS dependencies
 
+# Install pnpm
+RUN npm install -g pnpm@latest
+
+# Set working directory
 WORKDIR /app
 
-RUN npm install -g pnpm@8.1.0
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
 
-COPY package.json .
+# Install dependencies with cache mount for better performance
+RUN --mount=type=cache,target=/root/.pnpm \
+    pnpm install --frozen-lockfile
 
-RUN pnpm install
+# ===== Development Stage =====
+FROM node:lts-alpine AS development
 
-COPY . .
+# Install pnpm
+RUN npm install -g pnpm@latest
 
+# Create app user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S vue -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Change ownership to app user
+RUN chown -R vue:nodejs /app
+
+# Switch to app user
+USER vue
+
+# Copy dependencies from previous stage
+COPY --from=dependencies --chown=vue:nodejs /app/node_modules ./node_modules
+COPY --from=dependencies --chown=vue:nodejs /app/package.json ./package.json
+COPY --from=dependencies --chown=vue:nodejs /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Copy source code
+COPY --chown=vue:nodejs . .
+
+# Expose development port
+EXPOSE 3000
+
+# Health check for development server
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+
+# Start development server
 CMD [ "pnpm", "run", "dev" ]
