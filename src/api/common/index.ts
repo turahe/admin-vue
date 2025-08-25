@@ -1,5 +1,6 @@
 import request from '@/axios'
 
+// ===== Legacy Dictionary APIs =====
 // 获取所有字典
 export const getDictApi = () => {
   return request.get({ url: '/mock/dict/list' })
@@ -9,3 +10,6 @@ export const getDictApi = () => {
 export const getDictOneApi = async () => {
   return request.get({ url: '/mock/dict/one' })
 }
+
+// ===== Export Common Types =====
+export * from './types'
