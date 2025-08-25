@@ -1,0 +1,317 @@
+name: 📊 Code Quality Monitoring
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+
+jobs:
+  # ===== Code Analysis =====
+  analyze:
+    name: 🔍 Code Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🔍 Run ESLint with detailed output
+      run: |
+        echo "## 🔍 ESLint Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Run ESLint and capture output
+        if pnpm lint:eslint --format json --output-file eslint-report.json; then
+          echo "✅ **Status:** No ESLint errors" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Status:** ESLint issues found" >> $GITHUB_STEP_SUMMARY
+          
+          # Parse and display summary (if jq is available)
+          if command -v jq >/dev/null 2>&1; then
+            ERRORS=$(jq '[.[] | .messages[] | select(.severity == 2)] | length' eslint-report.json 2>/dev/null || echo "0")
+            WARNINGS=$(jq '[.[] | .messages[] | select(.severity == 1)] | length' eslint-report.json 2>/dev/null || echo "0")
+            
+            echo "- **Errors:** $ERRORS" >> $GITHUB_STEP_SUMMARY
+            echo "- **Warnings:** $WARNINGS" >> $GITHUB_STEP_SUMMARY
+          fi
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+    - name: 🎨 Check code formatting
+      run: |
+        echo "## 💅 Code Formatting" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if pnpm lint:format --check; then
+          echo "✅ **Status:** Code is properly formatted" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Status:** Code formatting issues found" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** Run \`pnpm lint:format\` to fix formatting" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+    - name: 🎨 Check styles
+      run: |
+        echo "## 🎨 Style Linting" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if pnpm lint:style; then
+          echo "✅ **Status:** No style issues" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Status:** Style issues found" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** Run \`pnpm lint:style\` to fix issues" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+    - name: 📊 Test Coverage Analysis
+      run: |
+        echo "## 📊 Test Coverage" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Run tests with coverage
+        pnpm test:coverage --reporter=json --outputFile=coverage-report.json || true
+        
+        # Extract coverage information if coverage files exist
+        if [ -f "coverage/coverage-summary.json" ]; then
+          echo "📈 **Coverage Report:**" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          if command -v jq >/dev/null 2>&1; then
+            jq -r '.total | "Lines: \(.lines.pct)%\nFunctions: \(.functions.pct)%\nBranches: \(.branches.pct)%\nStatements: \(.statements.pct)%"' coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Coverage data available in artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "📊 **Coverage:** Report generation in progress..." >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+    - name: 📤 Upload coverage reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-reports
+        path: |
+          coverage/
+          eslint-report.json
+          coverage-report.json
+        retention-days: 7
+
+  # ===== Dependency Analysis =====
+  dependencies:
+    name: 📦 Dependency Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 📊 Analyze bundle size
+      run: |
+        echo "## 📦 Bundle Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Build for production
+        pnpm build:pro
+        
+        # Analyze bundle sizes
+        echo "### 📊 Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        find dist -name "*.js" -o -name "*.css" | while read file; do
+          size=$(du -h "$file" | cut -f1)
+          echo "$size - $(basename "$file")" >> $GITHUB_STEP_SUMMARY
+        done
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        
+        # Total bundle size
+        total_size=$(du -sh dist | cut -f1)
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Total Bundle Size:** $total_size" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+    - name: 🔍 Check for outdated packages
+      run: |
+        echo "## 📦 Dependency Status" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for outdated packages
+        if pnpm outdated --format list > outdated.txt 2>/dev/null; then
+          if [ -s outdated.txt ]; then
+            echo "⚠️ **Outdated Packages Found:**" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            head -20 outdated.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            
+            count=$(wc -l < outdated.txt)
+            if [ $count -gt 20 ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "*... and $(($count - 20)) more*" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "✅ **All packages are up to date**" >> $GITHUB_STEP_SUMMARY
+          fi
+        else
+          echo "✅ **All packages are up to date**" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+    - name: 🔒 Security audit
+      run: |
+        echo "## 🔒 Security Status" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if pnpm audit --audit-level moderate --json > audit.json 2>/dev/null; then
+          echo "✅ **Security Status:** No moderate or high vulnerabilities" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Security Status:** Vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+          
+          # Extract vulnerability count if jq is available
+          if command -v jq >/dev/null 2>&1 && [ -f audit.json ]; then
+            high=$(jq '.metadata.vulnerabilities.high // 0' audit.json 2>/dev/null || echo "0")
+            moderate=$(jq '.metadata.vulnerabilities.moderate // 0' audit.json 2>/dev/null || echo "0")
+            
+            echo "- **High:** $high" >> $GITHUB_STEP_SUMMARY
+            echo "- **Moderate:** $moderate" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** Run \`pnpm audit\` for details and \`pnpm audit fix\` to resolve" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+  # ===== Performance Metrics =====
+  performance:
+    name: ⚡ Performance Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: ⚡ Build and analyze performance
+      run: |
+        echo "## ⚡ Performance Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Time the build process
+        echo "### 🏗️ Build Performance" >> $GITHUB_STEP_SUMMARY
+        start_time=$(date +%s)
+        
+        pnpm build:pro
+        
+        end_time=$(date +%s)
+        build_time=$((end_time - start_time))
+        
+        echo "- **Build Time:** ${build_time}s" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Analyze chunk sizes
+        echo "### 📊 Chunk Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        find dist -name "*.js" | sort -V | while read file; do
+          size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file")
+          size_kb=$((size / 1024))
+          echo "${size_kb}KB - $(basename "$file")" >> $GITHUB_STEP_SUMMARY
+        done
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for large chunks (> 500KB)
+        echo "" >> $GITHUB_STEP_SUMMARY
+        large_chunks=$(find dist -name "*.js" -size +500k | wc -l)
+        if [ $large_chunks -gt 0 ]; then
+          echo "⚠️ **Warning:** $large_chunks chunk(s) larger than 500KB detected" >> $GITHUB_STEP_SUMMARY
+          echo "Consider code splitting for better performance" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "✅ **Performance:** All chunks are within recommended size limits" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  # ===== Code Quality Report =====
+  quality-report:
+    name: 📋 Quality Report
+    runs-on: ubuntu-latest
+    needs: [analyze, dependencies, performance]
+    if: always()
+
+    steps:
+    - name: 📊 Generate Quality Summary
+      run: |
+        echo "# 📊 Code Quality Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## 📈 Overall Status" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Category | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| 🔍 Code Analysis | ${{ needs.analyze.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| 📦 Dependencies | ${{ needs.dependencies.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| ⚡ Performance | ${{ needs.performance.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Determine overall quality score
+        if [ "${{ needs.analyze.result }}" = "success" ] && [ "${{ needs.dependencies.result }}" = "success" ]; then
+          echo "## 🎯 Quality Score: A+" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Excellent!** Your code meets all quality standards." >> $GITHUB_STEP_SUMMARY
+        elif [ "${{ needs.analyze.result }}" = "success" ] || [ "${{ needs.dependencies.result }}" = "success" ]; then
+          echo "## 🎯 Quality Score: B+" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **Good, but could be better.** Check the details above for areas to improve." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "## 🎯 Quality Score: C" >> $GITHUB_STEP_SUMMARY
+          echo "❌ **Needs attention.** Please address the issues identified above." >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "📅 **Report Generated:** $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "🔄 **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "🌿 **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY

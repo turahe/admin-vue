@@ -1,0 +1,193 @@
+name: 📦 Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-dependencies:
+    name: 🔄 Update Dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🔍 Check for updates
+      id: check-updates
+      run: |
+        echo "Checking for outdated dependencies..."
+        pnpm outdated --format list > outdated.txt || true
+        if [ -s outdated.txt ]; then
+          echo "updates-available=true" >> $GITHUB_OUTPUT
+          echo "📦 Found outdated dependencies:"
+          cat outdated.txt
+        else
+          echo "updates-available=false" >> $GITHUB_OUTPUT
+          echo "✅ All dependencies are up to date!"
+        fi
+
+    - name: 🔄 Update dependencies
+      if: steps.check-updates.outputs.updates-available == 'true'
+      run: |
+        echo "Updating dependencies..."
+        pnpm update --latest
+        
+        # Run tests to ensure updates don't break anything
+        echo "Running critical tests after updates..."
+        pnpm test:critical
+
+    - name: 📝 Create Pull Request
+      if: steps.check-updates.outputs.updates-available == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'chore: update dependencies'
+        title: '📦 chore: automated dependency updates'
+        body: |
+          ## 📦 Automated Dependency Updates
+          
+          This PR contains automated updates to project dependencies.
+          
+          ### 🔍 What's Changed
+          - Updated outdated npm packages to their latest versions
+          - All critical tests are passing ✅
+          
+          ### 🧪 Testing
+          - [x] Critical test suite passed
+          - [ ] Full test suite (manual verification recommended)
+          - [ ] Manual testing in development environment
+          
+          ### 📋 Checklist
+          - [ ] Review the updated dependencies
+          - [ ] Check for any breaking changes in changelogs
+          - [ ] Test the application locally
+          - [ ] Verify all functionality works as expected
+          
+          ---
+          
+          🤖 This PR was created automatically by the dependency update workflow.
+          
+          **Note:** Please review the changes carefully before merging.
+        branch: chore/dependency-updates
+        delete-branch: true
+        draft: false
+
+  security-audit:
+    name: 🔒 Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🔒 Run security audit
+      id: audit
+      run: |
+        echo "Running security audit..."
+        if pnpm audit --audit-level high; then
+          echo "security-status=clean" >> $GITHUB_OUTPUT
+          echo "✅ No high-severity vulnerabilities found"
+        else
+          echo "security-status=vulnerabilities" >> $GITHUB_OUTPUT
+          echo "⚠️ Security vulnerabilities detected"
+          pnpm audit --audit-level high > audit-report.txt || true
+        fi
+
+    - name: 🚨 Create Security Issue
+      if: steps.audit.outputs.security-status == 'vulnerabilities'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          let auditReport = '';
+          
+          try {
+            auditReport = fs.readFileSync('audit-report.txt', 'utf8');
+          } catch (error) {
+            auditReport = 'Audit report not available';
+          }
+          
+          const body = `## 🚨 Security Vulnerabilities Detected
+          
+          The automated security audit has detected high-severity vulnerabilities in project dependencies.
+          
+          ### 📋 Audit Report
+          \`\`\`
+          ${auditReport}
+          \`\`\`
+          
+          ### 🔧 Recommended Actions
+          1. Review the vulnerabilities listed above
+          2. Update the affected packages to secure versions
+          3. Run \`pnpm audit fix\` to auto-fix where possible
+          4. For manual fixes, update package.json and run \`pnpm install\`
+          5. Re-run the security audit to verify fixes
+          
+          ### 🧪 Testing After Fixes
+          - [ ] Run \`pnpm test:critical\` to ensure functionality
+          - [ ] Test the application locally
+          - [ ] Verify no breaking changes introduced
+          
+          ---
+          
+          🤖 This issue was created automatically by the security audit workflow.
+          
+          **Priority:** High - Please address these vulnerabilities promptly.`;
+          
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '🚨 Security Vulnerabilities Detected - ' + new Date().toISOString().split('T')[0],
+            body: body,
+            labels: ['security', 'dependencies', 'high-priority']
+          });
+
+    - name: ✅ Security Status Summary
+      run: |
+        echo "## 🔒 Security Audit Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ steps.audit.outputs.security-status }}" = "clean" ]; then
+          echo "✅ **Status:** No high-severity vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+          echo "🛡️ **Result:** Dependencies are secure" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "🚨 **Status:** Security vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **Result:** Action required - please review and fix" >> $GITHUB_STEP_SUMMARY
+          echo "📋 **Next Steps:** Check the created issue for details" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Audit Date:** $(date)" >> $GITHUB_STEP_SUMMARY

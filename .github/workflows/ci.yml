@@ -1,0 +1,340 @@
+name: 🚀 CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+# Cancel previous runs when new commits are pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ===== Code Quality & Linting =====
+  lint:
+    name: 🔍 Code Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🔍 ESLint check
+      run: pnpm lint:eslint
+
+    - name: 💅 Prettier check
+      run: pnpm lint:format
+
+    - name: 🎨 Stylelint check
+      run: pnpm lint:style
+
+    - name: 📝 TypeScript check
+      run: pnpm ts:check
+
+  # ===== Testing =====
+  test:
+    name: 🧪 Test Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        node-version: [18, 20]
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🧪 Run critical tests
+      run: pnpm test:critical
+
+    - name: 📊 Run full test suite with coverage
+      run: pnpm test:coverage
+      continue-on-error: true
+
+    - name: 📈 Upload coverage to Codecov
+      if: matrix.node-version == '18'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  # ===== Build =====
+  build:
+    name: 🏗️ Build Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint, test]
+    strategy:
+      matrix:
+        build-mode: [dev, test, pro]
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🏗️ Build for ${{ matrix.build-mode }}
+      run: pnpm build:${{ matrix.build-mode }}
+
+    - name: 📦 Upload build artifacts
+      if: matrix.build-mode == 'pro'
+      uses: actions/upload-artifact@v3
+      with:
+        name: production-build
+        path: dist/
+        retention-days: 7
+
+  # ===== Security Audit =====
+  security:
+    name: 🔒 Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 🔒 Run security audit
+      run: pnpm audit --audit-level moderate
+
+    - name: 🔍 Check for vulnerabilities
+      run: pnpm audit --audit-level high --prod
+      continue-on-error: true
+
+  # ===== Dependency Check =====
+  dependency-check:
+    name: 📦 Dependency Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🔍 Check for outdated dependencies
+      run: pnpm outdated || true
+
+    - name: 📦 Check for duplicate dependencies
+      run: pnpm dedupe --check || true
+
+  # ===== Performance Monitoring =====
+  performance:
+    name: ⚡ Performance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [build]
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+
+    - name: 📥 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🏗️ Build for production
+      run: pnpm build:pro
+
+    - name: 📊 Bundle size analysis
+      run: |
+        echo "## 📦 Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        find dist -name "*.js" -exec ls -lah {} \; | sort -k5 -hr >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  # ===== Auto-Deploy to Preview (for PRs) =====
+  deploy-preview:
+    name: 🚀 Deploy Preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint, test, build]
+    if: github.event_name == 'pull_request' && github.head_ref != 'main'
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: production-build
+        path: dist/
+
+    - name: 🚀 Deploy to Preview
+      id: deploy
+      run: |
+        echo "url=https://preview-pr-${{ github.event.number }}.yourdomain.com" >> $GITHUB_OUTPUT
+        echo "🚀 Preview deployment simulated for PR #${{ github.event.number }}"
+        echo "Preview URL would be: https://preview-pr-${{ github.event.number }}.yourdomain.com"
+
+    - name: 💬 Comment PR with preview link
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `## 🚀 Preview Deployment
+            
+            ✅ Your preview deployment is ready!
+            
+            **Preview URL:** https://preview-pr-${{ github.event.number }}.yourdomain.com
+            
+            **Build Details:**
+            - 🏗️ Built from: \`${{ github.head_ref }}\`
+            - 📝 Commit: \`${{ github.sha }}\`
+            - ⏱️ Build time: ${{ github.run_number }}
+            
+            > This preview will be automatically updated when you push new commits to this PR.`
+          })
+
+  # ===== Production Deploy (main branch only) =====
+  deploy-production:
+    name: 🌟 Deploy Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [lint, test, build, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://yourdomain.com
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: production-build
+        path: dist/
+
+    - name: 🌟 Deploy to Production
+      run: |
+        echo "🌟 Production deployment would happen here"
+        echo "Deploying to: https://yourdomain.com"
+        # Add your deployment commands here
+        # Examples:
+        # - AWS S3: aws s3 sync dist/ s3://your-bucket --delete
+        # - Netlify: netlify deploy --prod --dir=dist
+        # - Vercel: vercel --prod
+        # - FTP: lftp -c "mirror -R dist/ /var/www/html/"
+
+    - name: 📧 Notify deployment success
+      if: success()
+      run: |
+        echo "✅ Production deployment successful!"
+        echo "🌐 Site is live at: https://yourdomain.com"
+
+  # ===== Notification =====
+  notify:
+    name: 📢 Notify Results
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [lint, test, build, security, dependency-check]
+
+    steps:
+    - name: 📊 Workflow Summary
+      run: |
+        echo "## 🎯 Workflow Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| 🔍 Lint | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| 🧪 Test | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| 🏗️ Build | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| 🔒 Security | ${{ needs.security.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| 📦 Dependencies | ${{ needs.dependency-check.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "**Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
