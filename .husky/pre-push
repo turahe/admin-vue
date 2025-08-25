@@ -1,0 +1,2 @@
+echo "🧪 Running critical tests before push..."
+pnpm test:pre-push

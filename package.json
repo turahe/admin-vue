@@ -29,7 +29,9 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:critical": "vitest run tests/axios/types.test.ts tests/scripts/ --reporter=basic",
+    "test:pre-push": "pnpm test:critical"
   },
   "dependencies": {
     "@eslint/js": "^9.34.0",
