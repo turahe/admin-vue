@@ -5,4 +5,4 @@ export type {
   BlogUpdateRequest,
   BlogFilters,
   BlogStats
-} from '@/api/common/types'
+} from '@/api/types/blog'

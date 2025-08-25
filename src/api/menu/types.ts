@@ -5,4 +5,4 @@ export type {
   MenuUpdateRequest,
   MenuFilters,
   MenuStats
-} from '@/api/common/types'
+} from '@/api/types/menu'

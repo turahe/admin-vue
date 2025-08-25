@@ -4,4 +4,4 @@ export type {
   CategoryUpdateRequest,
   CategoryFilters,
   CategoryStats
-} from '@/api/common/types'
+} from '@/api/types/category'

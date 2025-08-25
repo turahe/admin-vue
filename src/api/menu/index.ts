@@ -4,13 +4,15 @@ import type {
   MenuCreateRequest,
   MenuUpdateRequest,
   MenuFilters,
+  MenuStats
+} from '@/api/types/menu'
+import type {
   PaginationParams,
   ListResponse,
   ApiResponse,
   BulkDeleteRequest,
-  BulkResponse,
-  MenuStats
-} from '@/api/common/types'
+  BulkResponse
+} from '@/api/types/base'
 
 // ===== Menu CRUD Operations =====
 

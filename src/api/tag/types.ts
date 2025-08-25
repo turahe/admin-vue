@@ -1,7 +1,1 @@
-export type {
-  Tag,
-  TagCreateRequest,
-  TagUpdateRequest,
-  TagFilters,
-  TagStats
-} from '@/api/common/types'
+export type { Tag, TagCreateRequest, TagUpdateRequest, TagFilters, TagStats } from '@/api/types/tag'

@@ -11,4 +11,4 @@ export type {
   ProductUpdateRequest,
   ProductFilters,
   ProductStats
-} from '@/api/common/types'
+} from '@/api/types/product'

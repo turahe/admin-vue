@@ -4,4 +4,4 @@ export type {
   ImageUpdateRequest,
   ImageFilters,
   ImageStats
-} from '@/api/common/types'
+} from '@/api/types/image'

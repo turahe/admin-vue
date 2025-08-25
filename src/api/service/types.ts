@@ -11,4 +11,4 @@ export type {
   ServiceUpdateRequest,
   ServiceFilters,
   ServiceStats
-} from '@/api/common/types'
+} from '@/api/types/service'

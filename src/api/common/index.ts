@@ -11,5 +11,5 @@ export const getDictOneApi = async () => {
   return request.get({ url: '/mock/dict/one' })
 }
 
-// ===== Export Common Types =====
-export * from './types'
+// ===== Export All Types =====
+export * from '@/api/types'

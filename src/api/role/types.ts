@@ -5,4 +5,4 @@ export type {
   RoleUpdateRequest,
   RoleFilters,
   RoleStats
-} from '@/api/common/types'
+} from '@/api/types/role'
