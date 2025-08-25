@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import path from 'path'
 import fs from 'fs-extra'
-import { IconGenerator, createIconGenerator, createDefaultConfig } from '../icon.lib'
-import type { Collection, IconCollectionData } from '../icon.lib'
+import { IconGenerator, createIconGenerator, createDefaultConfig } from '../../scripts/icon.lib'
+import type { Collection, IconCollectionData } from '../../scripts/icon.lib'
 
 // Mock fs-extra
 vi.mock('fs-extra')
@@ -80,9 +80,7 @@ describe('IconGenerator', () => {
 
       await iconGenerator.readCollectionsData(customPath)
 
-      expect(mockFs.readJSON).toHaveBeenCalledWith(
-        path.join(customPath, 'collections.json')
-      )
+      expect(mockFs.readJSON).toHaveBeenCalledWith(path.join(customPath, 'collections.json'))
     })
   })
 
@@ -115,9 +113,7 @@ describe('IconGenerator', () => {
 
       const result = iconGenerator.transformCollections(rawCollections)
 
-      expect(result).toEqual([
-        { id: 'test-icon', name: 'test-icon', prefix: 'test-icon' }
-      ])
+      expect(result).toEqual([{ id: 'test-icon', name: 'test-icon', prefix: 'test-icon' }])
     })
   })
 
@@ -169,9 +165,9 @@ describe('IconGenerator', () => {
       const mockIconData: IconCollectionData = {
         prefix: 'ant-design',
         icons: {
-          'home': {},
-          'user': {},
-          'setting': {}
+          home: {},
+          user: {},
+          setting: {}
         }
       }
       mockFs.readJSON.mockResolvedValue(mockIconData)
@@ -191,27 +187,21 @@ describe('IconGenerator', () => {
 
       await iconGenerator.readIconCollectionData('test-icon', customPath)
 
-      expect(mockFs.readJSON).toHaveBeenCalledWith(
-        path.join(customPath, 'json', 'test-icon.json')
-      )
+      expect(mockFs.readJSON).toHaveBeenCalledWith(path.join(customPath, 'json', 'test-icon.json'))
     })
   })
 
   describe('generateIconNames', () => {
     it('should generate icon names with prefix', () => {
       const iconData = {
-        'home': {},
-        'user': {},
-        'setting': {}
+        home: {},
+        user: {},
+        setting: {}
       }
 
       const result = iconGenerator.generateIconNames(iconData, 'ant-design')
 
-      expect(result).toEqual([
-        'vi-ant-design:home',
-        'vi-ant-design:user',
-        'vi-ant-design:setting'
-      ])
+      expect(result).toEqual(['vi-ant-design:home', 'vi-ant-design:user', 'vi-ant-design:setting'])
     })
 
     it('should handle empty icon data', () => {
@@ -229,11 +219,7 @@ describe('IconGenerator', () => {
       const result = iconGenerator.generateIconNames(iconData, 'test')
 
       // Object.keys() maintains insertion order in modern JS
-      expect(result).toEqual([
-        'vi-test:z-icon',
-        'vi-test:a-icon',
-        'vi-test:b-icon'
-      ])
+      expect(result).toEqual(['vi-test:z-icon', 'vi-test:a-icon', 'vi-test:b-icon'])
     })
   })
 
@@ -267,7 +253,9 @@ describe('IconGenerator', () => {
 
       const result = iconGenerator.generateFileContent(iconSetData)
 
-      expect(result).toBe('export default {\n  "name": "Test Icons",\n  "prefix": "vi-test",\n  "icons": [\n    "vi-test:icon1",\n    "vi-test:icon2"\n  ]\n}')
+      expect(result).toBe(
+        'export default {\n  "name": "Test Icons",\n  "prefix": "vi-test",\n  "icons": [\n    "vi-test:icon1",\n    "vi-test:icon2"\n  ]\n}'
+      )
     })
 
     it('should handle empty icons array', () => {
@@ -334,8 +322,8 @@ describe('IconGenerator', () => {
       const validData = {
         prefix: 'test',
         icons: {
-          'icon1': {},
-          'icon2': {}
+          icon1: {},
+          icon2: {}
         }
       }
 
@@ -386,9 +374,9 @@ describe('IconGenerator', () => {
     const mockIconData: IconCollectionData = {
       prefix: 'ant-design',
       icons: {
-        'home': {},
-        'user': {},
-        'setting': {}
+        home: {},
+        user: {},
+        setting: {}
       }
     }
 
@@ -419,25 +407,25 @@ describe('IconGenerator', () => {
     })
 
     it('should throw error for non-existent collection', async () => {
-      await expect(
-        iconGenerator.generateIconSet('non-existent', mockCollections)
-      ).rejects.toThrow('Selected icon set not found: non-existent')
+      await expect(iconGenerator.generateIconSet('non-existent', mockCollections)).rejects.toThrow(
+        'Selected icon set not found: non-existent'
+      )
     })
 
     it('should throw error for invalid icon collection data', async () => {
       mockFs.readJSON.mockResolvedValue({ prefix: 'test' }) // missing icons
 
-      await expect(
-        iconGenerator.generateIconSet('ant-design', mockCollections)
-      ).rejects.toThrow('Invalid icon collection data for: ant-design')
+      await expect(iconGenerator.generateIconSet('ant-design', mockCollections)).rejects.toThrow(
+        'Invalid icon collection data for: ant-design'
+      )
     })
 
     it('should handle file system errors gracefully', async () => {
       mockFs.ensureDir.mockRejectedValue(new Error('Permission denied'))
 
-      await expect(
-        iconGenerator.generateIconSet('ant-design', mockCollections)
-      ).rejects.toThrow('Permission denied')
+      await expect(iconGenerator.generateIconSet('ant-design', mockCollections)).rejects.toThrow(
+        'Permission denied'
+      )
     })
   })
 })
@@ -505,7 +493,7 @@ describe('Integration Tests', () => {
       })
       .mockResolvedValueOnce({
         prefix: 'test',
-        icons: { 'icon1': {}, 'icon2': {} }
+        icons: { icon1: {}, icon2: {} }
       })
     mockFs.ensureDir.mockResolvedValue(undefined)
     mockFs.writeFile.mockResolvedValue(undefined)

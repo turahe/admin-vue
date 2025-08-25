@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import inquirer from 'inquirer'
 import chalk from 'chalk'
-import { createIconGenerator } from './icon.lib'
+import { createIconGenerator } from '../../scripts/icon.lib'
 
 // Mock dependencies
 vi.mock('inquirer')
@@ -20,7 +20,7 @@ vi.mock('chalk', () => ({
   red: vi.fn((text) => text)
 }))
 
-vi.mock('./icon.lib', () => ({
+vi.mock('../../scripts/icon.lib', () => ({
   createIconGenerator: vi.fn()
 }))
 
@@ -37,7 +37,7 @@ describe('Icon Generation Script Functions', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     mockIconGenerator = {
       verifyIconifyDirectory: vi.fn(),
       readCollectionsData: vi.fn(),
@@ -55,7 +55,7 @@ describe('Icon Generation Script Functions', () => {
 
   it('should create icon generator with mocked functions', () => {
     const generator = createIconGenerator()
-    
+
     expect(mockCreateIconGenerator).toHaveBeenCalled()
     expect(generator).toBe(mockIconGenerator)
     expect(generator.verifyIconifyDirectory).toBeDefined()
@@ -70,23 +70,27 @@ describe('Icon Generation Script Functions', () => {
       { key: 'test1', value: 'test1', name: 'Test 1' },
       { key: 'test2', value: 'test2', name: 'Test 2' }
     ]
-    
+
     mockInquirer.prompt.mockResolvedValue({ iconSet: 'test1' })
 
-    const result = await inquirer.prompt([{
-      type: 'list',
-      name: 'iconSet',
-      choices: testChoices,
-      message: 'Select the icon set that needs to be generated:'
-    }])
+    const result = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'iconSet',
+        choices: testChoices,
+        message: 'Select the icon set that needs to be generated:'
+      }
+    ])
 
     expect(result).toEqual({ iconSet: 'test1' })
-    expect(mockInquirer.prompt).toHaveBeenCalledWith([{
-      type: 'list',
-      name: 'iconSet',
-      choices: testChoices,
-      message: 'Select the icon set that needs to be generated:'
-    }])
+    expect(mockInquirer.prompt).toHaveBeenCalledWith([
+      {
+        type: 'list',
+        name: 'iconSet',
+        choices: testChoices,
+        message: 'Select the icon set that needs to be generated:'
+      }
+    ])
   })
 
   it('should test chalk color functions', () => {
@@ -122,7 +126,7 @@ describe('Icon Generation Script Functions', () => {
     })
 
     const generator = createIconGenerator()
-    
+
     const dirExists = await generator.verifyIconifyDirectory()
     expect(dirExists).toBe(true)
 
