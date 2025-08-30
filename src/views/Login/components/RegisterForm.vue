@@ -1,34 +1,28 @@
 <script setup lang="tsx">
+import { reactive, ref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
-import { reactive, ref, unref } from 'vue'
-import { useI18n } from '@/hooks/web/useI18n'
+import { ElLink, ElMessage } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
-import { ElInput, FormRules } from 'element-plus'
 import { useValidator } from '@/hooks/web/useValidator'
 import { BaseButton } from '@/components/Button'
-import { IAgree } from '@/components/IAgree'
+import { useUserStore } from '@/store/modules/user'
+import type { RegisterRequest } from '@/api/auth'
+
+const { required, email, lengthRange, phone } = useValidator()
 
 const emit = defineEmits(['to-login'])
 
-const { formRegister, formMethods } = useForm()
-const { getElFormExpose } = formMethods
+const userStore = useUserStore()
 
-const { t } = useI18n()
+// const { t } = useI18n() // Not used in this component
 
-const { required, check } = useValidator()
-
-const getCodeTime = ref(60)
-const getCodeLoading = ref(false)
-const getCode = () => {
-  getCodeLoading.value = true
-  const timer = setInterval(() => {
-    getCodeTime.value--
-    if (getCodeTime.value <= 0) {
-      clearInterval(timer)
-      getCodeTime.value = 60
-      getCodeLoading.value = false
-    }
-  }, 1000)
+const rules = {
+  country: [required()],
+  username: [required(), lengthRange({ min: 3, max: 50 })],
+  email: [required(), email()],
+  phone: [required(), phone()],
+  password: [required(), lengthRange({ min: 8, max: 100 })],
+  password_confirmation: [required()]
 }
 
 const schema = reactive<FormSchema[]>([
@@ -40,91 +34,85 @@ const schema = reactive<FormSchema[]>([
     formItemProps: {
       slots: {
         default: () => {
-          return <h2 class="text-2xl font-bold text-center w-[100%]">{t('login.register')}</h2>
+          return <h2 class="text-2xl font-bold text-center w-[100%]">Create Account</h2>
         }
       }
+    }
+  },
+  {
+    field: 'country',
+    label: 'Country',
+    component: 'Select',
+    colProps: {
+      span: 24
+    },
+    componentProps: {
+      placeholder: 'Select your country',
+      options: [
+        { label: 'Indonesia', value: 'ID' },
+        { label: 'United States', value: 'US' },
+        { label: 'United Kingdom', value: 'GB' },
+        { label: 'Germany', value: 'DE' },
+        { label: 'France', value: 'FR' },
+        { label: 'Japan', value: 'JP' },
+        { label: 'China', value: 'CN' },
+        { label: 'India', value: 'IN' }
+      ]
     }
   },
   {
     field: 'username',
-    label: t('login.username'),
-    value: '',
+    label: 'Username',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: t('login.usernamePlaceholder')
+      placeholder: 'Enter your username'
     }
   },
   {
     field: 'email',
-    label: t('login.email'),
-    value: '',
+    label: 'Email',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: t('login.emailPlaceholder')
+      placeholder: 'Enter your email address'
+    }
+  },
+  {
+    field: 'phone',
+    label: 'Phone Number',
+    component: 'Input',
+    colProps: {
+      span: 24
+    },
+    componentProps: {
+      placeholder: '+1234567890'
     }
   },
   {
     field: 'password',
-    label: t('login.password'),
-    value: '',
+    label: 'Password',
     component: 'InputPassword',
     colProps: {
       span: 24
     },
     componentProps: {
-      style: {
-        width: '100%'
-      },
-      strength: true,
-      placeholder: t('login.passwordPlaceholder')
+      placeholder: 'Enter your password (min 8 characters)'
     }
   },
   {
-    field: 'check_password',
-    label: t('login.checkPassword'),
-    value: '',
+    field: 'password_confirmation',
+    label: 'Confirm Password',
     component: 'InputPassword',
     colProps: {
       span: 24
     },
     componentProps: {
-      style: {
-        width: '100%'
-      },
-      strength: true,
-      placeholder: t('login.passwordPlaceholder')
-    }
-  },
-  {
-    field: 'iAgree',
-    colProps: {
-      span: 24
-    },
-    formItemProps: {
-      slots: {
-        default: (formData: any) => {
-          return (
-            <>
-              <IAgree
-                v-model={formData.iAgree}
-                text="我同意《用户协议》"
-                link={[
-                  {
-                    text: '《用户协议》',
-                    url: 'https://element-plus.org/'
-                  }
-                ]}
-              />
-            </>
-          )
-        }
-      }
+      placeholder: 'Confirm your password'
     }
   },
   {
@@ -139,17 +127,17 @@ const schema = reactive<FormSchema[]>([
             <>
               <div class="w-[100%]">
                 <BaseButton
+                  loading={loading.value}
                   type="primary"
                   class="w-[100%]"
-                  loading={loading.value}
-                  onClick={loginRegister}
+                  onClick={handleRegister}
                 >
-                  {t('login.register')}
+                  Create Account
                 </BaseButton>
               </div>
               <div class="w-[100%] mt-15px">
                 <BaseButton class="w-[100%]" onClick={toLogin}>
-                  {t('login.hasUser')}
+                  Back to Login
                 </BaseButton>
               </div>
             </>
@@ -157,35 +145,71 @@ const schema = reactive<FormSchema[]>([
         }
       }
     }
+  },
+  {
+    field: 'login_link',
+    colProps: {
+      span: 24
+    },
+    formItemProps: {
+      slots: {
+        default: () => {
+          return (
+            <div class="text-center">
+              Already have an account?{' '}
+              <ElLink type="primary" underline={false} onClick={() => emit('to-login')}>
+                Sign in here
+              </ElLink>
+            </div>
+          )
+        }
+      }
+    }
   }
 ])
 
-const rules: FormRules = {
-  username: [required()],
-  email: [required()],
-  password: [required()],
-  check_password: [required()],
-  iAgree: [required(), check()]
-}
-
-const toLogin = () => {
-  emit('to-login')
-}
+const { formRegister, formMethods } = useForm()
+const { getFormData, getElFormExpose } = formMethods
 
 const loading = ref(false)
 
-const loginRegister = async () => {
+// Handle registration
+const handleRegister = async () => {
   const formRef = await getElFormExpose()
-  formRef?.validate(async (valid) => {
-    if (valid) {
+  await formRef?.validate(async (isValid) => {
+    if (isValid) {
+      loading.value = true
+      const formData = await getFormData<RegisterRequest>()
+
+      // Check if passwords match
+      if (formData.password !== formData.password_confirmation) {
+        ElMessage.error('Passwords do not match')
+        loading.value = false
+        return
+      }
+
       try {
-        loading.value = true
-        toLogin()
+        const result = await userStore.register(formData)
+
+        if (result.success) {
+          ElMessage.success('Registration successful! Please check your email for verification.')
+          emit('to-login')
+        } else {
+          ElMessage.error(result.message || 'Registration failed')
+        }
+      } catch (error) {
+        console.error('Registration error:', error)
+        ElMessage.error('Registration failed. Please try again.')
       } finally {
         loading.value = false
       }
     }
   })
+}
+
+// Go to login page
+const toLogin = () => {
+  emit('to-login')
 }
 </script>
 

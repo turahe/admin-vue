@@ -7,31 +7,18 @@ import { toAnyString } from '@/utils'
 
 const data = ref<any>([])
 
-/**
- * Generate random integer between min and max (inclusive)
- */
-const randomInteger = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-/**
- * Generate placeholder image URL
- */
-const generateImageUrl = (width: number, height: number): string => {
-  return `https://picsum.photos/${width}/${height}?random=${Math.random()}`
-}
-
 const getList = () => {
   const list: any = []
   for (let i = 0; i < 20; i++) {
-    // Generate random dimensions between 100 and 500
-    const height = randomInteger(100, 500)
-    const width = randomInteger(100, 500)
+    // Random integer between 100 and 500
+    const height = Math.floor(Math.random() * 401) + 100
+    const width = Math.floor(Math.random() * 401) + 100
     list.push({
       width,
       height,
       id: toAnyString(),
-      image_uri: generateImageUrl(width, height)
+      // Use placeholder image service
+      image_uri: `https://picsum.photos/${width}/${height}?random=${i}`
     })
   }
   data.value = [...unref(data), ...list]

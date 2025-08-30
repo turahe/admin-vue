@@ -18,8 +18,51 @@ router.beforeEach(async (to, from, next) => {
   const permissionStore = usePermissionStoreWithOut()
   const appStore = useAppStoreWithOut()
   const userStore = useUserStoreWithOut()
+
+  console.log('Permission guard - Route:', to.path)
+  console.log('Permission guard - User info:', userStore.getUserInfo)
+  console.log('Permission guard - Token:', userStore.getToken)
+  console.log('Permission guard - Refresh token:', userStore.getRefreshToken)
+
+  // Wait for store hydration if needed
+  if (!userStore.getUserInfo && userStore.getToken) {
+    console.log('Permission guard - Waiting for store hydration...')
+    // Try to decode user info from token if available
+    try {
+      const { decodeJWT } = await import('@/utils/jwt')
+      const tokenPayload = decodeJWT(userStore.getToken)
+      if (tokenPayload) {
+        const userInfo = {
+          id: tokenPayload.user_id,
+          username: tokenPayload.username,
+          email: tokenPayload.email,
+          phone: null,
+          avatar: `https://ui-avatars.com/api/?name=${tokenPayload.username.charAt(0)}&color=7F9CF5&background=EBF4FF`,
+          email_verified_at: null,
+          phone_verified_at: null,
+          deleted_at: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+        userStore.setUserInfo(userInfo)
+        console.log('Permission guard - Restored user info from token')
+      }
+    } catch (error) {
+      console.error('Permission guard - Error restoring user info:', error)
+    }
+  }
+
+  // Check if we're on the login page first to avoid redirect loops
+  if (to.path === '/login') {
+    console.log('Permission guard - Login route, allowing access')
+    next()
+    return
+  }
+
   if (userStore.getUserInfo) {
+    // User is logged in, redirect from login to dashboard
     if (to.path === '/login') {
+      console.log('Permission guard - User logged in, redirecting from login to dashboard')
       next({ path: '/' })
     } else {
       if (permissionStore.getIsAddRouters) {
@@ -49,10 +92,17 @@ router.beforeEach(async (to, from, next) => {
       next(nextData)
     }
   } else {
+    console.log('Permission guard - No user info, checking route access')
+    console.log('Permission guard - Current route:', to.path)
+    console.log('Permission guard - NO_REDIRECT_WHITE_LIST:', NO_REDIRECT_WHITE_LIST)
+
+    // Check if route is in whitelist
     if (NO_REDIRECT_WHITE_LIST.indexOf(to.path) !== -1) {
-      next()
+      console.log('Permission guard - Allowing access to whitelisted route:', to.path)
+      next() // Allow access to whitelisted routes
     } else {
-      next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
+      console.log('Permission guard - Redirecting to login from:', to.path)
+      next(`/login?redirect=${to.path}`)
     }
   }
 })

@@ -1,6 +1,6 @@
 import service from './service'
 import { CONTENT_TYPE } from '@/constants'
-import { useUserStoreWithOut } from '@/store/modules/user'
+import { authManager } from './auth'
 
 /**
  * Internal request function that handles authentication and headers
@@ -19,18 +19,38 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 const request = (option: AxiosConfig) => {
   const { url, method, params, data, headers, responseType } = option
 
-  const userStore = useUserStoreWithOut()
+  // Check if this is a public endpoint
+  const isPublicEndpoint = authManager.isPublicEndpoint(url || '')
+  console.log('Request URL:', url, 'Is public:', isPublicEndpoint)
+
+  // Get authentication header (only for authenticated endpoints)
+  const authHeader = !isPublicEndpoint ? authManager.getAuthHeader() : null
+  console.log('Auth header:', authHeader)
+
+  const requestHeaders: Record<string, any> = {
+    'Content-Type': CONTENT_TYPE,
+    ...headers
+  }
+
+  // Only add Authorization header if we have a token and it's not a public endpoint
+  if (authHeader) {
+    requestHeaders['Authorization'] = authHeader
+  }
+
+  console.log('Final request config:', {
+    url,
+    method,
+    headers: requestHeaders,
+    data
+  })
+
   return service.request({
     url: url,
     method,
     params,
     data: data,
     responseType: responseType,
-    headers: {
-      'Content-Type': CONTENT_TYPE,
-      [userStore.getTokenKey ?? 'Authorization']: userStore.getToken ?? '',
-      ...headers
-    }
+    headers: requestHeaders
   })
 }
 

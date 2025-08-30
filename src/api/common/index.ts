@@ -1,15 +1,11 @@
 import request from '@/axios'
 
-// ===== Legacy Dictionary APIs =====
-// 获取所有字典
+// Get all dictionaries
 export const getDictApi = () => {
-  return request.get({ url: '/mock/dict/list' })
+  return request.get({ url: `${import.meta.env.VITE_API_BASE_PATH}/dictionaries` })
 }
 
-// 模拟获取某个字典
+// Get specific dictionary
 export const getDictOneApi = async () => {
-  return request.get({ url: '/mock/dict/one' })
+  return request.get({ url: `${import.meta.env.VITE_API_BASE_PATH}/dictionaries/one` })
 }
-
-// ===== Export All Types =====
-export * from '@/api/types'

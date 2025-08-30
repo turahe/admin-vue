@@ -8,6 +8,7 @@ const { online } = useNetwork()
 
 <template>
   <ContentWrap title="useNetwork">
-    {{ t('common.currentNetworkStatus') }}: <code>{{ online ? t(' ') : t('common.disconnected') }}</code>
+    {{ t('common.currentNetworkStatus') }}:
+    <code>{{ online ? t(' ') : t('common.disconnected') }}</code>
   </ContentWrap>
 </template>

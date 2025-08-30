@@ -4,7 +4,12 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { Table } from '@/components/Table'
 import { ref, unref, nextTick, watch, reactive } from 'vue'
 import { ElTree, ElInput, ElDivider } from 'element-plus'
-import { getDepartmentApi, getUserByIdApi, saveUserApi, deleteUserByIdApi } from '@/api/department'
+import {
+  getDepartmentApi,
+  getDepartmentUsersApi,
+  saveUserApi,
+  deleteUserByIdApi
+} from '@/api/department'
 import type { DepartmentItem, DepartmentUserItem } from '@/api/department/types'
 import { useTable } from '@/hooks/web/useTable'
 import { Search } from '@/components/Search'
@@ -20,7 +25,7 @@ const { t } = useI18n()
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
     const { pageSize, currentPage } = tableState
-    const res = await getUserByIdApi({
+    const res = await getDepartmentUsersApi({
       id: unref(currentNodeKey),
       pageIndex: unref(currentPage),
       pageSize: unref(pageSize),

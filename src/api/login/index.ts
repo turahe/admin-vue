@@ -5,7 +5,7 @@ interface RoleParams {
   roleName: string
 }
 
-export const loginApi = (data: UserLoginType): Promise<IResponse<LoginResponse>> => {
+export const userLoginApi = (data: UserLoginType): Promise<IResponse<LoginResponse>> => {
   return request.post({ url: '/login', data })
 }
 

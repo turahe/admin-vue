@@ -123,6 +123,6 @@ export default {
     getCode: 'Dapatkan kode',
     email: 'Email',
     emailPlaceholder: 'Silakan masukkan email'
-  },
+  }
   // ... Copy the rest from en.ts and translate as needed ...
-} 
+}

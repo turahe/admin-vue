@@ -4,7 +4,7 @@ import { CountTo } from '@/components/CountTo'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ref, reactive } from 'vue'
-import { getCountApi } from '@/api/dashboard/analysis'
+import { getAnalysisCountApi } from '@/api/dashboard/analysis'
 import type { AnalysisTotalTypes } from '@/api/dashboard/analysis/types'
 
 const { t } = useI18n()
@@ -23,7 +23,7 @@ let totalState = reactive<AnalysisTotalTypes>({
 })
 
 const getCount = async () => {
-  const res = await getCountApi()
+  const res = await getAnalysisCountApi()
     .catch(() => {})
     .finally(() => {
       loading.value = false

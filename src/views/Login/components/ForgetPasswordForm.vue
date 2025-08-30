@@ -18,7 +18,9 @@ const schema = reactive<FormSchema[]>([
     formItemProps: {
       slots: {
         default: () => {
-          return <h2 class="text-2xl font-bold text-center w-[100%]">{t('login.forgetPassword')}</h2>
+          return (
+            <h2 class="text-2xl font-bold text-center w-[100%]">{t('login.forgetPassword')}</h2>
+          )
         }
       }
     }
@@ -45,7 +47,12 @@ const schema = reactive<FormSchema[]>([
         default: () => {
           return (
             <div class="w-[100%]">
-              <BaseButton type="primary" class="w-[100%]" loading={loading.value} onClick={onSubmit}>
+              <BaseButton
+                type="primary"
+                class="w-[100%]"
+                loading={loading.value}
+                onClick={onSubmit}
+              >
                 {t('login.forgetPassword')}
               </BaseButton>
             </div>
@@ -87,4 +94,4 @@ const onSubmit = async () => {
     class="dark:(border-1 border-[var(--el-border-color)] border-solid)"
     @register="formRegister"
   />
-</template> 
+</template>

@@ -6,6 +6,7 @@ import { SizeDropdown } from '@/components/SizeDropdown'
 import { UserInfo } from '@/components/UserInfo'
 import { Screenfull } from '@/components/Screenfull'
 import { Breadcrumb } from '@/components/Breadcrumb'
+import { Notification } from '@/components/Notification'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -32,6 +33,9 @@ const layout = computed(() => appStore.getLayout)
 
 // 多语言图标
 const locale = computed(() => appStore.getLocale)
+
+// 通知图标
+const notification = computed(() => appStore.getNotification)
 
 export default defineComponent({
   name: 'ToolHeader',
@@ -64,6 +68,9 @@ export default defineComponent({
               class="custom-hover"
               color="var(--top-header-text-color)"
             ></LocaleDropdown>
+          ) : undefined}
+          {notification.value ? (
+            <Notification class="custom-hover" color="var(--top-header-text-color)"></Notification>
           ) : undefined}
           <UserInfo></UserInfo>
         </div>

@@ -6,6 +6,7 @@ import VueJsx from '@vitejs/plugin-vue-jsx'
 import progress from 'vite-plugin-progress'
 import EslintPlugin from 'vite-plugin-eslint'
 import { ViteEjsPlugin } from 'vite-plugin-ejs'
+
 import PurgeIcons from 'vite-plugin-purge-icons'
 import ServerUrlCopy from 'vite-plugin-url-copy'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
@@ -58,13 +59,12 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
             ]
           })
         : undefined,
-      // Disable ESLint plugin for build to avoid formatting issues
-      // EslintPlugin({
-      //   cache: false,
-      //   failOnWarning: false,
-      //   failOnError: false,
-      //   include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx']
-      // }),
+      EslintPlugin({
+        cache: false,
+        failOnWarning: false,
+        failOnError: false,
+        include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx'] // 检查的文件
+      }),
       VueI18nPlugin({
         runtimeOnly: true,
         compositionOnly: true,
@@ -147,7 +147,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         'vue',
         'vue-router',
         'vue-types',
-        'element-plus/es/locale/lang/zh-cn',
+
         'element-plus/es/locale/lang/en',
         '@iconify/iconify',
         '@vueuse/core',

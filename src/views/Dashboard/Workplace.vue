@@ -10,7 +10,7 @@ import { EChartsOption } from 'echarts'
 import { radarOption } from './echarts-data'
 import { Highlight } from '@/components/Highlight'
 import {
-  getCountApi,
+  getWorkplaceCountApi,
   getProjectApi,
   getDynamicApi,
   getTeamApi,
@@ -29,7 +29,7 @@ let totalSate = reactive<WorkplaceTotal>({
 })
 
 const getCount = async () => {
-  const res = await getCountApi().catch(() => {})
+  const res = await getWorkplaceCountApi().catch(() => {})
   if (res) {
     totalSate = Object.assign(totalSate, res.data)
   }

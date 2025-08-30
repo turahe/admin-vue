@@ -1,6 +1,11 @@
 export interface DepartmentItem {
   id: string
-  departmentName: string
+  name: string
+  code: string
+  slug: string
+  parentId: string
+  description: string
+  type: string
   children?: DepartmentItem[]
 }
 
@@ -12,17 +17,22 @@ export interface DepartmentUserParams {
   pageSize: number
   pageIndex: number
   id: string
-  username?: string
-  account?: string
+  name?: string
+  code?: string
+  slug?: string
+  parentId?: string
+  description?: string
+  type?: string
 }
 
 export interface DepartmentUserItem {
   id: string
-  username: string
-  account: string
-  email: string
-  createTime: string
-  role: string
+  name: string
+  code: string
+  slug: string
+  parentId: string
+  description: string
+  type: string
   department: DepartmentItem
 }
 

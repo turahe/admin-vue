@@ -725,6 +725,14 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         meta: {
           title: t('router.role')
         }
+      },
+      {
+        path: 'category',
+        component: () => import('@/views/Authorization/Category/Category.vue'),
+        name: 'Category',
+        meta: {
+          title: 'Category Management'
+        }
       }
     ]
   }
@@ -735,6 +743,11 @@ const router = createRouter({
   strict: true,
   routes: constantRouterMap as RouteRecordRaw[],
   scrollBehavior: () => ({ left: 0, top: 0 })
+})
+
+// Add async routes to the router so they're available for navigation
+asyncRouterMap.forEach((route) => {
+  router.addRoute(route as RouteRecordRaw)
 })
 
 export const resetRouter = (): void => {

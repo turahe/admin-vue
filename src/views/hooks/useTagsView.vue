@@ -50,11 +50,21 @@ const setAnalysisTitle = () => {
   <ContentWrap title="useTagsView">
     <BaseButton type="primary" @click="closeAllTabs"> {{ t('common.closeAllTabs') }} </BaseButton>
     <BaseButton type="primary" @click="closeLeftTabs"> {{ t('common.closeLeftTabs') }} </BaseButton>
-    <BaseButton type="primary" @click="closeRightTabs"> {{ t('common.closeRightTabs') }} </BaseButton>
-    <BaseButton type="primary" @click="closeOtherTabs"> {{ t('common.closeOtherTabs') }} </BaseButton>
-    <BaseButton type="primary" @click="closeCurrentTab"> {{ t('common.closeCurrentTab') }} </BaseButton>
+    <BaseButton type="primary" @click="closeRightTabs">
+      {{ t('common.closeRightTabs') }}
+    </BaseButton>
+    <BaseButton type="primary" @click="closeOtherTabs">
+      {{ t('common.closeOtherTabs') }}
+    </BaseButton>
+    <BaseButton type="primary" @click="closeCurrentTab">
+      {{ t('common.closeCurrentTab') }}
+    </BaseButton>
     <BaseButton type="primary" @click="refresh"> {{ t('common.refreshCurrentTab') }} </BaseButton>
-    <BaseButton type="primary" @click="setTabTitle"> {{ t('common.modifyCurrentTitle') }} </BaseButton>
-    <BaseButton type="primary" @click="setAnalysisTitle"> {{ t('common.modifyAnalysisPageTitle') }} </BaseButton>
+    <BaseButton type="primary" @click="setTabTitle">
+      {{ t('common.modifyCurrentTitle') }}
+    </BaseButton>
+    <BaseButton type="primary" @click="setAnalysisTitle">
+      {{ t('common.modifyAnalysisPageTitle') }}
+    </BaseButton>
   </ContentWrap>
 </template>

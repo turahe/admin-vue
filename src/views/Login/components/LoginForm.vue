@@ -2,18 +2,17 @@
 import { reactive, ref, watch, onMounted, unref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElCheckbox, ElLink } from 'element-plus'
+import { ElCheckbox, ElLink, ElMessage } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
-import { loginApi, getTestRoleApi, getAdminRoleApi } from '@/api/login'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserType, UserLoginType, LoginResponse } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
 import { BaseButton } from '@/components/Button'
+import type { LoginRequest } from '@/api/auth'
 
 const { required } = useValidator()
 
@@ -30,7 +29,7 @@ const { currentRoute, addRoute, push } = useRouter()
 const { t } = useI18n()
 
 const rules = {
-  username: [required()],
+  identity: [required()],
   password: [required()]
 }
 
@@ -49,15 +48,15 @@ const schema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'email',
-    label: t('login.email'),
-    // value: 'admin@example.com',
+    field: 'identity',
+    label: t('login.identity') || 'Email, Username or Phone',
+    // value: 'admin@example.com', // or 'admin' or '+1234567890'
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: 'Enter your email address'
+      placeholder: 'Enter email, username or phone'
     }
   },
   {
@@ -196,18 +195,23 @@ const iconSize = 30
 const remember = ref(userStore.getRememberMe)
 
 const initLoginInfo = () => {
+  console.log('Initializing login info')
   const loginInfo = userStore.getLoginInfo
+  console.log('Login info from store:', loginInfo)
   if (loginInfo) {
-    const { username, password } = loginInfo
-    setValues({ username, password })
+    const { identity, password } = loginInfo
+    console.log('Setting form values:', { identity, password })
+    setValues({ identity, password })
   }
 }
 onMounted(() => {
+  console.log('LoginForm mounted')
   initLoginInfo()
 })
 
 const { formRegister, formMethods } = useForm()
 const { getFormData, getElFormExpose, setValues } = formMethods
+console.log('Form methods:', { formRegister, formMethods })
 
 const loading = ref(false)
 
@@ -229,65 +233,76 @@ watch(
 
 // 登录
 const signIn = async () => {
+  console.log('Sign in function called')
   const formRef = await getElFormExpose()
+  console.log('Form ref:', formRef)
   await formRef?.validate(async (isValid) => {
+    console.log('Form validation result:', isValid)
     if (isValid) {
       loading.value = true
-      const formData = await getFormData<UserLoginType>()
+      const formData = await getFormData<LoginRequest>()
+      console.log('Retrieved form data:', formData)
 
       try {
-        const res = await loginApi(formData)
+        console.log('Form data before login:', formData)
+        const result = await userStore.login(formData)
+        console.log('Login result:', result)
 
-        if (res) {
-          // Handle Laravel Passport response
-          let token: string
-          let userInfo: UserType
-          
-          if (res.token && res.user) {
-            // Laravel Passport response format: { token: string, user: UserType }
-            token = res.token
-            userInfo = res.user
-          } else if (res.access_token) {
-            // Alternative Laravel Passport format: { access_token: string, user: UserType }
-            token = res.access_token
-            userInfo = res.user || res
-          } else if (res.data) {
-            // Wrapped response format: { data: { token: string, user: UserType } }
-            token = res.data.token || res.data.access_token
-            userInfo = res.data.user || res.data
-          } else {
-            // Fallback - assume the response contains the token directly
-            token = res.token || res.access_token
-            userInfo = res.user || res
-          }
-
-          // Store the authentication token
-          userStore.setToken(token)
-          
+        if (result.success) {
           // 是否记住我
           if (unref(remember)) {
             userStore.setLoginInfo({
-              email: formData.email,
+              identity: formData.identity,
               password: formData.password
             })
           } else {
             userStore.setLoginInfo(undefined)
           }
           userStore.setRememberMe(unref(remember))
-          userStore.setUserInfo(userInfo)
-          
+
+          ElMessage.success('Login successful!')
+
+          // Fetch user profile after successful login
+          try {
+            await userStore.fetchUserProfile()
+          } catch (error) {
+            console.warn('Failed to fetch user profile:', error)
+            // Continue with login even if profile fetch fails
+          }
+
           // 是否使用动态路由
+          console.log('Navigation logic - Dynamic router:', appStore.getDynamicRouter)
+          console.log('Permission store addRouters:', permissionStore.getAddRouters)
+
           if (appStore.getDynamicRouter) {
+            console.log('Using dynamic router, calling getRole()')
             getRole()
           } else {
-            await permissionStore.generateRoutes('static').catch(() => {})
-            permissionStore.getAddRouters.forEach((route) => {
+            console.log('Using static router, generating routes')
+            await permissionStore.generateRoutes('static').catch((error) => {
+              console.error('Error generating static routes:', error)
+            })
+
+            const addRouters = permissionStore.getAddRouters
+            console.log('Generated addRouters:', addRouters)
+
+            addRouters.forEach((route) => {
+              console.log('Adding route:', route)
               addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
             })
+
             permissionStore.setIsAddRouters(true)
-            push({ path: redirect.value || permissionStore.addRouters[0].path })
+
+            const targetPath = redirect.value || addRouters[0]?.path || '/dashboard'
+            console.log('Navigating to:', targetPath)
+            push({ path: targetPath })
           }
+        } else {
+          ElMessage.error(result.message || 'Login failed')
         }
+      } catch (error) {
+        console.error('Login error:', error)
+        ElMessage.error('Login failed. Please try again.')
       } finally {
         loading.value = false
       }
@@ -295,28 +310,34 @@ const signIn = async () => {
   })
 }
 
-// 获取角色信息
+// 获取角色信息 - simplified for now
 const getRole = async () => {
-  const userInfo = userStore.getUserInfo()
-  const params = {
-    roleName: userInfo?.name || userInfo?.email
-  }
-  const res =
-    appStore.getDynamicRouter && appStore.getServerDynamicRouter
-      ? await getAdminRoleApi(params)
-      : await getTestRoleApi(params)
-  if (res) {
-    const routers = res.data || []
-    userStore.setRoleRouters(routers)
-    appStore.getDynamicRouter && appStore.getServerDynamicRouter
-      ? await permissionStore.generateRoutes('server', routers).catch(() => {})
-      : await permissionStore.generateRoutes('frontEnd', routers).catch(() => {})
+  console.log('getRole function called')
+  const userInfo = userStore.getUserInfo
+  console.log('User info in getRole:', userInfo)
 
-    permissionStore.getAddRouters.forEach((route) => {
+  if (userInfo) {
+    console.log('User info exists, generating static routes')
+    // For now, use static routes since we don't have role API
+    await permissionStore.generateRoutes('static').catch((error) => {
+      console.error('Error generating static routes in getRole:', error)
+    })
+
+    const addRouters = permissionStore.getAddRouters
+    console.log('Generated addRouters in getRole:', addRouters)
+
+    addRouters.forEach((route) => {
+      console.log('Adding route in getRole:', route)
       addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
     })
+
     permissionStore.setIsAddRouters(true)
-    push({ path: redirect.value || permissionStore.addRouters[0].path })
+
+    const targetPath = redirect.value || addRouters[0]?.path || '/dashboard'
+    console.log('Navigating to in getRole:', targetPath)
+    push({ path: targetPath })
+  } else {
+    console.log('No user info, cannot proceed with navigation')
   }
 }
 
