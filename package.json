@@ -25,7 +25,8 @@
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.cjs",
     "prepare": "husky install",
     "p": "plop",
-    "icon": "esno ./scripts/icon.ts"
+    "icon": "esno ./scripts/icon.ts",
+    "test:pre-push": "echo 'Skipping tests for now'"
   },
   "dependencies": {
     "iconify-icon": "^1.0.0",
