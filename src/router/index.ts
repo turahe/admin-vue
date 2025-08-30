@@ -686,7 +686,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
   {
     path: '/authorization',
     component: Layout,
-    redirect: '/authorization/user',
+    redirect: '/authorization/permissions',
     name: 'Authorization',
     meta: {
       title: t('router.authorization'),
@@ -694,6 +694,42 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
       alwaysShow: true
     },
     children: [
+      {
+        path: 'permissions',
+        component: getParentLayout(),
+        redirect: '/authorization/permissions/user',
+        name: 'Permissions',
+        meta: {
+          title: 'Permissions',
+          alwaysShow: true
+        },
+        children: [
+          {
+            path: 'user',
+            component: () => import('@/views/Authorization/User/User.vue'),
+            name: 'User',
+            meta: {
+              title: t('router.user')
+            }
+          },
+          {
+            path: 'role',
+            component: () => import('@/views/Authorization/Role/Role.vue'),
+            name: 'Role',
+            meta: {
+              title: t('router.role')
+            }
+          },
+          {
+            path: 'menu',
+            component: () => import('@/views/Authorization/Menu/Menu.vue'),
+            name: 'Menu',
+            meta: {
+              title: t('router.menuManagement')
+            }
+          }
+        ]
+      },
       {
         path: 'department',
         component: () => import('@/views/Authorization/Department/Department.vue'),
@@ -703,35 +739,67 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         }
       },
       {
-        path: 'user',
-        component: () => import('@/views/Authorization/User/User.vue'),
-        name: 'User',
-        meta: {
-          title: t('router.user')
-        }
-      },
-      {
-        path: 'menu',
-        component: () => import('@/views/Authorization/Menu/Menu.vue'),
-        name: 'Menu',
-        meta: {
-          title: t('router.menuManagement')
-        }
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/Authorization/Role/Role.vue'),
-        name: 'Role',
-        meta: {
-          title: t('router.role')
-        }
-      },
-      {
         path: 'category',
         component: () => import('@/views/Authorization/Category/Category.vue'),
         name: 'Category',
         meta: {
           title: 'Category Management'
+        }
+      },
+      {
+        path: 'address',
+        component: () => import('@/views/Authorization/Address/Address.vue'),
+        name: 'Address',
+        meta: {
+          title: 'Address Management'
+        }
+      },
+      {
+        path: 'comment',
+        component: () => import('@/views/Authorization/Comment/Comment.vue'),
+        name: 'Comment',
+        meta: {
+          title: 'Comment Management'
+        }
+      },
+      {
+        path: 'media',
+        component: () => import('@/views/Authorization/Media/Media.vue'),
+        name: 'Media',
+        meta: {
+          title: 'Media Management'
+        }
+      },
+      {
+        path: 'organization',
+        component: () => import('@/views/Authorization/Organization/Organization.vue'),
+        name: 'Organization',
+        meta: {
+          title: 'Organization Management'
+        }
+      },
+      {
+        path: 'post',
+        component: () => import('@/views/Authorization/Post/Post.vue'),
+        name: 'Post',
+        meta: {
+          title: 'Post Management'
+        }
+      },
+      {
+        path: 'rbac',
+        component: () => import('@/views/Authorization/RBAC/RBAC.vue'),
+        name: 'RBAC',
+        meta: {
+          title: 'RBAC Management'
+        }
+      },
+      {
+        path: 'taxonomy',
+        component: () => import('@/views/Authorization/Taxonomy/Taxonomy.vue'),
+        name: 'Taxonomy',
+        meta: {
+          title: 'Taxonomy Management'
         }
       }
     ]
