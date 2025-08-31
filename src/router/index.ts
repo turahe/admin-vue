@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import type { App } from 'vue'
 import { Layout, getParentLayout } from '@/utils/routerHelper'
@@ -410,6 +410,27 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/settings',
+    component: Layout,
+    redirect: '/settings/integration',
+    name: 'Settings',
+    meta: {
+      title: t('router.settings'),
+      icon: 'vi-ant-design:setting-filled',
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'integration',
+        component: () => import('@/views/Settings/Integration/index.vue'),
+        name: 'Integration',
+        meta: {
+          title: t('router.integration')
+        }
+      }
+    ]
+  },
+  {
     path: '/function',
     component: Layout,
     redirect: '/function/multipleTabs',
@@ -713,6 +734,19 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
             }
           },
           {
+            path: 'user/:id/change-password',
+            component: () => import('@/views/Authorization/User/ChangePassword.vue'),
+            name: 'UserChangePassword',
+            meta: {
+              title: 'Change Password',
+              hidden: true,
+              noTagsView: true,
+              noCache: true,
+              canTo: true,
+              activeMenu: '/authorization/permissions/user'
+            }
+          },
+          {
             path: 'role',
             component: () => import('@/views/Authorization/Role/Role.vue'),
             name: 'Role',
@@ -738,14 +772,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           title: t('router.department')
         }
       },
-      {
-        path: 'category',
-        component: () => import('@/views/Authorization/Category/Category.vue'),
-        name: 'Category',
-        meta: {
-          title: 'Category Management'
-        }
-      },
+
       {
         path: 'address',
         component: () => import('@/views/Authorization/Address/Address.vue'),
@@ -807,7 +834,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   strict: true,
   routes: constantRouterMap as RouteRecordRaw[],
   scrollBehavior: () => ({ left: 0, top: 0 })

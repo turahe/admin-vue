@@ -194,7 +194,9 @@ export default {
     personal: 'Personal',
     avatars: 'Avatars',
     iAgree: 'I agree',
-    tree: 'Tree'
+    tree: 'Tree',
+    settings: 'Settings',
+    integration: 'Integration Settings'
   },
   permission: {
     hasPermission: 'Please set the operation permission value'
@@ -583,5 +585,81 @@ export default {
   avatarsDemo: {
     title:
       'Avatar component for avatar list, secondary packaging based on element plus Avatar component'
+  },
+  integration: {
+    title: 'Integration Settings',
+    description: 'Configure and manage your third-party service integrations',
+    resetToDefaults: 'Reset to Defaults',
+    saveAll: 'Save All Configurations',
+    resetConfirm:
+      'Are you sure you want to reset all integration configurations to their default values?',
+    resetWarning: 'Reset Warning',
+    resetSuccess: 'All configurations have been reset to defaults',
+    resetError: 'Failed to reset configurations',
+    saveSuccess: 'All configurations have been saved successfully',
+    saveError: 'Failed to save configurations',
+    noIntegrationsEnabled: 'Please enable at least one integration before saving',
+    whatsapp: {
+      title: 'WhatsApp Business API',
+      description: 'Connect your WhatsApp Business account for messaging and notifications',
+      enabled: 'WhatsApp integration enabled',
+      disabled: 'WhatsApp integration disabled',
+      phoneNumber: 'Phone Number',
+      phoneNumberPlaceholder: 'Enter your WhatsApp Business phone number',
+      apiKey: 'API Key',
+      apiKeyPlaceholder: 'Enter your WhatsApp Business API key',
+      webhookUrl: 'Webhook URL',
+      webhookUrlPlaceholder: 'Enter webhook URL for receiving messages'
+    },
+    google: {
+      title: 'Google Services',
+      description: 'Integrate with Google APIs for authentication and services',
+      enabled: 'Google integration enabled',
+      disabled: 'Google integration disabled',
+      clientId: 'Client ID',
+      clientIdPlaceholder: 'Enter your Google OAuth client ID',
+      clientSecret: 'Client Secret',
+      clientSecretPlaceholder: 'Enter your Google OAuth client secret',
+      redirectUri: 'Redirect URI',
+      redirectUriPlaceholder: 'Enter your OAuth redirect URI'
+    },
+    twitter: {
+      title: 'Twitter/X API',
+      description: 'Connect your Twitter/X account for social media management',
+      enabled: 'Twitter integration enabled',
+      disabled: 'Twitter integration disabled',
+      apiKey: 'API Key',
+      apiKeyPlaceholder: 'Enter your Twitter API key',
+      apiSecret: 'API Secret',
+      apiSecretPlaceholder: 'Enter your Twitter API secret',
+      accessToken: 'Access Token',
+      accessTokenPlaceholder: 'Enter your Twitter access token',
+      accessTokenSecret: 'Access Token Secret',
+      accessTokenSecretPlaceholder: 'Enter your Twitter access token secret'
+    },
+    facebook: {
+      title: 'Facebook Pages',
+      description: 'Manage your Facebook business pages and marketing',
+      enabled: 'Facebook integration enabled',
+      disabled: 'Facebook integration disabled',
+      appId: 'App ID',
+      appIdPlaceholder: 'Enter your Facebook app ID',
+      appSecret: 'App Secret',
+      appSecretPlaceholder: 'Enter your Facebook app secret',
+      pageId: 'Page ID',
+      pageIdPlaceholder: 'Enter your Facebook page ID'
+    },
+    github: {
+      title: 'GitHub Integration',
+      description: 'Connect your GitHub repositories for development workflows',
+      enabled: 'GitHub integration enabled',
+      disabled: 'GitHub integration disabled',
+      clientId: 'Client ID',
+      clientIdPlaceholder: 'Enter your GitHub OAuth app client ID',
+      clientSecret: 'Client Secret',
+      clientSecretPlaceholder: 'Enter your GitHub OAuth app client secret',
+      organization: 'Organization',
+      organizationPlaceholder: 'Enter your GitHub organization name'
+    }
   }
 }
