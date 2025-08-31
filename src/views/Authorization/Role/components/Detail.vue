@@ -3,9 +3,9 @@ import { PropType, ref, unref, nextTick } from 'vue'
 import { Descriptions, DescriptionsSchema } from '@/components/Descriptions'
 import { ElTag, ElTree } from 'element-plus'
 import { findIndex } from '@/utils'
-import { getMenuListApi } from '@/api/menu'
+import { getMenuApi } from '@/api/menu'
 
-defineProps({
+const props = defineProps({
   currentRow: {
     type: Object as PropType<any>,
     default: () => undefined
@@ -16,11 +16,11 @@ const filterPermissionName = (value: string) => {
   const index = findIndex(unref(currentTreeData)?.permissionList || [], (item) => {
     return item.value === value
   })
-  return (unref(currentTreeData)?.permissionList || [])[index].label ?? ''
+  return (unref(currentTreeData)?.permissionList || [])[index]?.label ?? ''
 }
 
 const renderTag = (enable?: boolean) => {
-  return <ElTag type={!enable ? 'danger' : 'success'}>{enable ? '启用' : '禁用'}</ElTag>
+  return <ElTag type={!enable ? 'danger' : 'success'}>{enable ? 'Active' : 'Inactive'}</ElTag>
 }
 
 const treeRef = ref<typeof ElTree>()
@@ -32,36 +32,48 @@ const nodeClick = (treeData: any) => {
 
 const treeData = ref<any[]>([])
 const getMenuList = async () => {
-  const res = await getMenuListApi()
-  if (res) {
-    treeData.value = res.data.list
-    await nextTick()
+  try {
+    const res: any = await getMenuApi()
+    if (res) {
+      treeData.value = res.data || res.list || []
+      await nextTick()
+    }
+  } catch (error) {
+    console.error('Failed to load menu data:', error)
   }
 }
 getMenuList()
 
 const detailSchema = ref<DescriptionsSchema[]>([
   {
-    field: 'roleName',
-    label: '角色名称'
+    field: 'name',
+    label: 'Role Name'
+  },
+  {
+    field: 'key',
+    label: 'Role Key'
   },
   {
     field: 'status',
-    label: '状态',
+    label: 'Status',
     slots: {
       default: (data: any) => {
-        return renderTag(data.status)
+        return renderTag(data.status === 'active')
       }
     }
   },
   {
-    field: 'remark',
-    label: '备注',
+    field: 'description',
+    label: 'Description',
     span: 24
   },
   {
-    field: 'permissionList',
-    label: '菜单分配',
+    field: 'sort',
+    label: 'Sort Order'
+  },
+  {
+    field: 'permissionIds',
+    label: 'Menu Permissions',
     span: 24,
     slots: {
       default: () => {
@@ -72,7 +84,7 @@ const detailSchema = ref<DescriptionsSchema[]>([
                 <ElTree
                   ref={treeRef}
                   node-key="id"
-                  props={{ children: 'children', label: 'title' }}
+                  props={{ children: 'children', label: 'name' }}
                   highlight-current
                   expand-on-click-node={false}
                   data={treeData.value}
@@ -80,7 +92,7 @@ const detailSchema = ref<DescriptionsSchema[]>([
                 >
                   {{
                     default: (data) => {
-                      return <span>{data?.data?.title}</span>
+                      return <span>{data?.data?.meta?.title || data?.data?.name}</span>
                     }
                   }}
                 </ElTree>

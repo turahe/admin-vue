@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { reactive, ref, unref } from 'vue'
-import { getMenuListApi } from '@/api/menu'
+import { getMenuApi } from '@/api/menu'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
@@ -18,7 +18,7 @@ const { t } = useI18n()
 
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
-    const res = await getMenuListApi()
+    const res = await getMenuApi()
     return {
       list: res.data.list || []
     }

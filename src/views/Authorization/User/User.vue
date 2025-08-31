@@ -19,8 +19,10 @@ import { Dialog } from '@/components/Dialog'
 import { getRoleListApi } from '@/api/role'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
 import { BaseButton } from '@/components/Button'
+import { useRouter } from 'vue-router'
 
 const { t } = useI18n()
+const router = useRouter()
 
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
@@ -91,7 +93,7 @@ const crudSchemas = reactive<CrudSchema[]>([
       hidden: true
       // slots: {
       //   default: (data: DepartmentUserItem) => {
-      //     return <>{data.department.departmentName}</>
+      //     return <>{data.department.name}</>
       //   }
       // }
     },
@@ -103,7 +105,7 @@ const crudSchemas = reactive<CrudSchema[]>([
       componentProps: {
         nodeKey: 'id',
         props: {
-          label: 'departmentName'
+          label: 'name'
         }
       },
       optionApi: async () => {
@@ -183,6 +185,9 @@ const crudSchemas = reactive<CrudSchema[]>([
               <BaseButton type="success" onClick={() => action(row, 'detail')}>
                 {t('exampleDemo.detail')}
               </BaseButton>
+              <BaseButton type="warning" onClick={() => changePassword(row)}>
+                Change Password
+              </BaseButton>
               <BaseButton type="danger" onClick={() => delData(row)}>
                 {t('exampleDemo.del')}
               </BaseButton>
@@ -234,7 +239,7 @@ const currentChange = (data: DepartmentItem) => {
 
 const filterNode = (value: string, data: DepartmentItem) => {
   if (!value) return true
-  return data.departmentName.includes(value)
+  return data.name.includes(value)
 }
 
 const dialogVisible = ref(false)
@@ -270,6 +275,10 @@ const action = (row: DepartmentUserItem, type: string) => {
   actionType.value = type
   currentRow.value = { ...row, department: unref(treeEl)?.getCurrentNode() || {} }
   dialogVisible.value = true
+}
+
+const changePassword = (row: DepartmentUserItem) => {
+  router.push(`/authorization/permissions/user/${row.id}/change-password`)
 }
 
 const writeRef = ref<ComponentRef<typeof Write>>()
@@ -318,17 +327,14 @@ const save = async () => {
         node-key="id"
         :current-node-key="currentNodeKey"
         :props="{
-          label: 'departmentName'
+          label: 'name'
         }"
         :filter-node-method="filterNode"
         @current-change="currentChange"
       >
         <template #default="{ data }">
-          <div
-            :title="data.departmentName"
-            class="whitespace-nowrap overflow-ellipsis overflow-hidden"
-          >
-            {{ data.departmentName }}
+          <div :title="data.name" class="whitespace-nowrap overflow-ellipsis overflow-hidden">
+            {{ data.name }}
           </div>
         </template>
       </ElTree>

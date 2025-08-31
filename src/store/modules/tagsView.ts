@@ -21,24 +21,24 @@ export interface TagsViewState {
 
 /**
  * Tags View Store - Manages navigation tabs and view caching
- * 
+ *
  * This store handles:
  * - Navigation tab management (visited pages)
  * - View caching for keep-alive functionality
  * - Tab selection and navigation
  * - Tab operations (add, delete, clear)
- * 
+ *
  * @example
  * ```typescript
  * // Basic usage
  * const tagsViewStore = useTagsViewStore()
- * 
+ *
  * // Add a new visited view
  * tagsViewStore.addView(route)
- * 
+ *
  * // Get all visited views
  * const views = tagsViewStore.getVisitedViews
- * 
+ *
  * // Clear all views
  * tagsViewStore.delAllViews()
  * ```
@@ -53,7 +53,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     cachedViews: new Set(),
     selectedTag: undefined
   }),
-  
+
   /**
    * Computed properties (getters) for accessing tags view state
    */
@@ -65,7 +65,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     getVisitedViews(): RouteLocationNormalizedLoaded[] {
       return this.visitedViews
     },
-    
+
     /**
      * Get cached view names for keep-alive functionality
      * @returns {string[]} Array of cached view names
@@ -73,7 +73,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     getCachedViews(): string[] {
       return Array.from(this.cachedViews)
     },
-    
+
     /**
      * Get currently selected navigation tab
      * @returns {RouteLocationNormalizedLoaded | undefined} Selected tab or undefined
@@ -89,7 +89,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     /**
      * Add a new view to both visited views and cached views
      * @param {RouteLocationNormalizedLoaded} view - Route information to add
-     * 
+     *
      * This action:
      * 1. Adds the view to visited views (navigation tabs)
      * 2. Updates the cached views for keep-alive functionality
@@ -98,11 +98,11 @@ export const useTagsViewStore = defineStore('tagsView', {
       this.addVisitedView(view)
       this.addCachedView()
     },
-    
+
     /**
      * Add a new visited view (navigation tab)
      * @param {RouteLocationNormalizedLoaded} view - Route information to add
-     * 
+     *
      * This action:
      * 1. Checks if view already exists (prevents duplicates)
      * 2. Respects noTagsView meta setting
@@ -117,10 +117,10 @@ export const useTagsViewStore = defineStore('tagsView', {
         })
       )
     },
-    
+
     /**
      * Update cached views based on current visited views
-     * 
+     *
      * This action:
      * 1. Iterates through all visited views
      * 2. Checks noCache meta setting for each view
@@ -145,7 +145,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     /**
      * Delete a specific view from both visited and cached views
      * @param {RouteLocationNormalizedLoaded} view - Route to delete
-     * 
+     *
      * This action:
      * 1. Removes the view from visited views
      * 2. Updates cached views accordingly
@@ -154,11 +154,11 @@ export const useTagsViewStore = defineStore('tagsView', {
       this.delVisitedView(view)
       this.addCachedView()
     },
-    
+
     /**
      * Delete a specific visited view (navigation tab)
      * @param {RouteLocationNormalizedLoaded} view - Route to delete
-     * 
+     *
      * This action finds and removes the view by path matching
      */
     delVisitedView(view: RouteLocationNormalizedLoaded) {
@@ -169,10 +169,10 @@ export const useTagsViewStore = defineStore('tagsView', {
         }
       }
     },
-    
+
     /**
      * Delete the current route from cached views
-     * 
+     *
      * This action:
      * 1. Gets the current route
      * 2. Finds and removes it from cached views
@@ -185,10 +185,10 @@ export const useTagsViewStore = defineStore('tagsView', {
         this.cachedViews.delete(this.getCachedViews[index])
       }
     },
-    
+
     /**
      * Delete all views and update cache accordingly
-     * 
+     *
      * This action:
      * 1. Clears all visited views (except affix tags)
      * 2. Updates cached views to match
@@ -197,10 +197,10 @@ export const useTagsViewStore = defineStore('tagsView', {
       this.delAllVisitedViews()
       this.addCachedView()
     },
-    
+
     /**
      * Delete all visited views except affix tags
-     * 
+     *
      * This action:
      * 1. Preserves affix tags (permanently visible tabs)
      * 2. Clears all other visited views
@@ -217,7 +217,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     /**
      * Delete all other views except the specified one and affix tags
      * @param {RouteLocationNormalizedLoaded} view - Route to preserve
-     * 
+     *
      * This action:
      * 1. Keeps the specified view and affix tags
      * 2. Removes all other visited views
@@ -227,11 +227,11 @@ export const useTagsViewStore = defineStore('tagsView', {
       this.delOthersVisitedViews(view)
       this.addCachedView()
     },
-    
+
     /**
      * Delete all other visited views except the specified one and affix tags
      * @param {RouteLocationNormalizedLoaded} view - Route to preserve
-     * 
+     *
      * This action filters visited views to keep only:
      * - The specified view
      * - Affix tags (permanently visible)
@@ -241,11 +241,11 @@ export const useTagsViewStore = defineStore('tagsView', {
         return v?.meta?.affix || v.path === view.path
       })
     },
-    
+
     /**
      * Delete all views to the left of the specified view
      * @param {RouteLocationNormalizedLoaded} view - Reference view
-     * 
+     *
      * This action:
      * 1. Finds the index of the specified view
      * 2. Removes all views to the left (lower indices)
@@ -264,11 +264,11 @@ export const useTagsViewStore = defineStore('tagsView', {
         this.addCachedView()
       }
     },
-    
+
     /**
      * Delete all views to the right of the specified view
      * @param {RouteLocationNormalizedLoaded} view - Reference view
-     * 
+     *
      * This action:
      * 1. Finds the index of the specified view
      * 2. Removes all views to the right (higher indices)
@@ -287,11 +287,11 @@ export const useTagsViewStore = defineStore('tagsView', {
         this.addCachedView()
       }
     },
-    
+
     /**
      * Update a visited view with new information
      * @param {RouteLocationNormalizedLoaded} view - Updated route information
-     * 
+     *
      * This action finds and updates the matching view by path
      */
     updateVisitedView(view: RouteLocationNormalizedLoaded) {
@@ -302,7 +302,7 @@ export const useTagsViewStore = defineStore('tagsView', {
         }
       }
     },
-    
+
     /**
      * Set the currently selected navigation tag
      * @param {RouteLocationNormalizedLoaded} tag - Tag to select
@@ -310,12 +310,12 @@ export const useTagsViewStore = defineStore('tagsView', {
     setSelectedTag(tag: RouteLocationNormalizedLoaded) {
       this.selectedTag = tag
     },
-    
+
     /**
      * Update the title of a specific visited view
      * @param {string} title - New title to set
      * @param {string} path - Path of the view to update (defaults to selected tag)
-     * 
+     *
      * This action:
      * 1. Finds the view by path (or uses selected tag path)
      * 2. Updates the meta title property
@@ -334,12 +334,12 @@ export const useTagsViewStore = defineStore('tagsView', {
 
 /**
  * Convenience function to use the tags view store outside of Vue components
- * 
+ *
  * This function provides access to the tags view store in non-reactive contexts
  * such as utility functions, API interceptors, or other stores.
- * 
+ *
  * @returns {ReturnType<typeof useTagsViewStore>} Tags view store instance
- * 
+ *
  * @example
  * ```typescript
  * // In a utility function
@@ -347,7 +347,7 @@ export const useTagsViewStore = defineStore('tagsView', {
  *   const tagsViewStore = useTagsViewStoreWithOut()
  *   tagsViewStore.delAllViews()
  * }
- * 
+ *
  * // In another store
  * const tagsViewStore = useTagsViewStoreWithOut()
  * tagsViewStore.addView(currentRoute)

@@ -11,12 +11,12 @@ import type {
  * Request interceptors interface for customizing HTTP request/response handling
  * @interface RequestInterceptors
  * @template T - Response data type
- * 
+ *
  * @property {function} requestInterceptors - Function to modify request configuration before sending
  * @property {function} requestInterceptorsCatch - Function to handle request errors
  * @property {function} responseInterceptors - Function to modify response data after receiving
  * @property {function} responseInterceptorsCatch - Function to handle response errors
- * 
+ *
  * @example
  * ```typescript
  * const interceptors: RequestInterceptors<ApiResponse> = {
@@ -46,9 +46,9 @@ interface RequestInterceptors<T> {
  * @interface RequestConfig
  * @template T - Response data type (defaults to AxiosResponse)
  * @extends AxiosRequestConfig
- * 
+ *
  * @property {RequestInterceptors<T>} interceptors - Optional custom interceptors for this request
- * 
+ *
  * @example
  * ```typescript
  * const config: RequestConfig<UserData> = {

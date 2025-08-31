@@ -6,7 +6,7 @@ import { SizeDropdown } from '@/components/SizeDropdown'
 import { UserInfo } from '@/components/UserInfo'
 import { Screenfull } from '@/components/Screenfull'
 import { Breadcrumb } from '@/components/Breadcrumb'
-import { Notification } from '@/components/Notification'
+
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -16,25 +16,18 @@ const prefixCls = getPrefixCls('tool-header')
 
 const appStore = useAppStore()
 
-// 面包屑
 const breadcrumb = computed(() => appStore.getBreadcrumb)
 
-// 折叠图标
 const hamburger = computed(() => appStore.getHamburger)
 
-// 全屏图标
 const screenfull = computed(() => appStore.getScreenfull)
 
-// 尺寸图标
 const size = computed(() => appStore.getSize)
 
-// 布局
 const layout = computed(() => appStore.getLayout)
 
-// 多语言图标
 const locale = computed(() => appStore.getLocale)
 
-// 通知图标
 const notification = computed(() => appStore.getNotification)
 
 export default defineComponent({
@@ -69,9 +62,7 @@ export default defineComponent({
               color="var(--top-header-text-color)"
             ></LocaleDropdown>
           ) : undefined}
-          {notification.value ? (
-            <Notification class="custom-hover" color="var(--top-header-text-color)"></Notification>
-          ) : undefined}
+
           <UserInfo></UserInfo>
         </div>
       </div>

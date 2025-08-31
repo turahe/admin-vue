@@ -25,21 +25,21 @@ export interface PermissionState {
 
 /**
  * Permission Store - Manages routing permissions and dynamic route generation
- * 
+ *
  * This store handles:
  * - Dynamic route generation based on user permissions
  * - Route filtering and access control
  * - Menu tab navigation routes
  * - Route state management
- * 
+ *
  * @example
  * ```typescript
  * // Basic usage
  * const permissionStore = usePermissionStore()
- * 
+ *
  * // Generate routes based on server permissions
  * await permissionStore.generateRoutes('server', userPermissions)
- * 
+ *
  * // Get available routes
  * const routes = permissionStore.getRouters
  * ```
@@ -55,7 +55,7 @@ export const usePermissionStore = defineStore('permission', {
     isAddRouters: false,
     menuTabRouters: []
   }),
-  
+
   /**
    * Computed properties (getters) for accessing permission state
    */
@@ -67,7 +67,7 @@ export const usePermissionStore = defineStore('permission', {
     getRouters(): AppRouteRecordRaw[] {
       return this.routers
     },
-    
+
     /**
      * Get dynamically added routes with flattened multi-level structure
      * @returns {AppRouteRecordRaw[]} Processed dynamic routes
@@ -75,7 +75,7 @@ export const usePermissionStore = defineStore('permission', {
     getAddRouters(): AppRouteRecordRaw[] {
       return flatMultiLevelRoutes(cloneDeep(this.addRouters))
     },
-    
+
     /**
      * Get whether dynamic routes have been added
      * @returns {boolean} Dynamic routes addition status
@@ -83,7 +83,7 @@ export const usePermissionStore = defineStore('permission', {
     getIsAddRouters(): boolean {
       return this.isAddRouters
     },
-    
+
     /**
      * Get routes used for menu tab navigation
      * @returns {AppRouteRecordRaw[]} Menu tab route configuration
@@ -101,12 +101,12 @@ export const usePermissionStore = defineStore('permission', {
      * @param {'server' | 'frontEnd' | 'static'} type - Route generation strategy
      * @param {AppCustomRouteRecordRaw[] | string[]} routers - Permission data or route identifiers
      * @returns {Promise<unknown>} Promise that resolves when routes are generated
-     * 
+     *
      * This action supports three generation strategies:
      * - 'server': Generate routes based on server-provided permission data
      * - 'frontEnd': Filter routes based on frontend permission logic
      * - 'static': Use static route configuration without filtering
-     * 
+     *
      * The generated routes include:
      * 1. Permission-filtered routes based on user access rights
      * 2. 404 catch-all route at the end
@@ -145,7 +145,7 @@ export const usePermissionStore = defineStore('permission', {
         resolve()
       })
     },
-    
+
     /**
      * Set the dynamic routes addition status
      * @param {boolean} state - Whether dynamic routes have been added
@@ -153,7 +153,7 @@ export const usePermissionStore = defineStore('permission', {
     setIsAddRouters(state: boolean): void {
       this.isAddRouters = state
     },
-    
+
     /**
      * Set menu tab navigation routes
      * @param {AppRouteRecordRaw[]} routers - Routes to use for menu tab navigation

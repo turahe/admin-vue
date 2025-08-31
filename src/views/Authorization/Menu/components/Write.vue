@@ -4,7 +4,7 @@ import { useForm } from '@/hooks/web/useForm'
 import { PropType, reactive, watch, ref, unref } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
-import { getMenuListApi } from '@/api/menu'
+import { getMenuApi } from '@/api/menu'
 import { ElButton, ElInput, ElPopconfirm, ElTable, ElTableColumn, ElTag } from 'element-plus'
 import AddButtonPermission from './AddButtonPermission.vue'
 import { BaseButton } from '@/components/Button'
@@ -140,7 +140,7 @@ const formSchema = reactive<FormSchema[]>([
       }
     },
     optionApi: async () => {
-      const res = await getMenuListApi()
+      const res = await getMenuApi()
       return res.data.list || []
     }
   },

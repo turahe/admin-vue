@@ -5,7 +5,7 @@ import { PropType, reactive, watch, ref, unref, nextTick } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElTree, ElCheckboxGroup, ElCheckbox } from 'element-plus'
-import { getMenuListApi } from '@/api/menu'
+import { getMenuApi } from '@/api/menu'
 import { filter, eachTree } from '@/utils/tree'
 import { findIndex } from '@/utils'
 
@@ -24,29 +24,59 @@ const treeRef = ref<typeof ElTree>()
 
 const formSchema = ref<FormSchema[]>([
   {
-    field: 'roleName',
+    field: 'name',
     label: t('role.roleName'),
-    component: 'Input'
+    component: 'Input',
+    componentProps: {
+      placeholder: 'Enter role name'
+    }
+  },
+  {
+    field: 'key',
+    label: 'Role Key',
+    component: 'Input',
+    componentProps: {
+      placeholder: 'Enter role key (e.g., admin, user)'
+    }
+  },
+  {
+    field: 'description',
+    label: 'Description',
+    component: 'Input',
+    componentProps: {
+      type: 'textarea',
+      placeholder: 'Enter role description'
+    }
   },
   {
     field: 'status',
     label: t('menu.status'),
     component: 'Select',
+    value: 'active',
     componentProps: {
       options: [
         {
-          label: t('userDemo.disable'),
-          value: 0
+          label: t('userDemo.enable'),
+          value: 'active'
         },
         {
-          label: t('userDemo.enable'),
-          value: 1
+          label: t('userDemo.disable'),
+          value: 'inactive'
         }
       ]
     }
   },
   {
-    field: 'menu',
+    field: 'sort',
+    label: 'Sort Order',
+    component: 'InputNumber',
+    value: 0,
+    componentProps: {
+      placeholder: 'Enter sort order'
+    }
+  },
+  {
+    field: 'permissionIds',
     label: t('role.menu'),
     colProps: {
       span: 24
@@ -70,7 +100,7 @@ const formSchema = ref<FormSchema[]>([
                   >
                     {{
                       default: (data) => {
-                        return <span>{data.data.meta.title}</span>
+                        return <span>{data.data.meta?.title || data.data.name}</span>
                       }
                     }}
                   </ElTree>
@@ -99,8 +129,8 @@ const nodeClick = (treeData: any) => {
 }
 
 const rules = reactive({
-  roleName: [required()],
-  role: [required()],
+  name: [required()],
+  key: [required()],
   status: [required()]
 })
 
@@ -109,35 +139,35 @@ const { setValues, getFormData, getElFormExpose } = formMethods
 
 const treeData = ref([])
 const getMenuList = async () => {
-  const res = await getMenuListApi()
-  if (res) {
-    treeData.value = res.data.list
-    if (!props.currentRow) return
-    await nextTick()
-    const checked: any[] = []
-    eachTree(props.currentRow.menu, (v) => {
-      checked.push({
-        id: v.id,
-        permission: v.meta?.permission || []
+  try {
+    const res: any = await getMenuApi()
+    if (res) {
+      treeData.value = res.data || res.list || []
+      if (!props.currentRow) return
+      await nextTick()
+      const checked: any[] = []
+      eachTree(props.currentRow.menu || [], (v) => {
+        checked.push({
+          id: v.id,
+          permission: v.meta?.permission || []
+        })
       })
-    })
-    eachTree(treeData.value, (v) => {
-      const index = findIndex(checked, (item) => {
-        return item.id === v.id
+      eachTree(treeData.value, (v) => {
+        const index = findIndex(checked, (item) => {
+          return item.id === v.id
+        })
+        if (index > -1) {
+          const meta = { ...(v.meta || {}) }
+          meta.permission = checked[index].permission
+          v.meta = meta
+        }
       })
-      if (index > -1) {
-        const meta = { ...(v.meta || {}) }
-        meta.permission = checked[index].permission
-        v.meta = meta
+      for (const item of checked) {
+        unref(treeRef)?.setChecked(item.id, true, false)
       }
-    })
-    for (const item of checked) {
-      unref(treeRef)?.setChecked(item.id, true, false)
     }
-    // unref(treeRef)?.setCheckedKeys(
-    //   checked.map((v) => v.id),
-    //   false
-    // )
+  } catch (error) {
+    console.error('Failed to load menu data:', error)
   }
 }
 getMenuList()
@@ -153,7 +183,7 @@ const submit = async () => {
     const data = filter(unref(treeData), (item: any) => {
       return checkedKeys.includes(item.id)
     })
-    formData.menu = data || []
+    formData.permissionIds = data.map((item: any) => item.id) || []
     console.log(formData)
     return formData
   }

@@ -23,21 +23,21 @@ interface LockState {
 
 /**
  * Lock Store - Manages screen lock functionality and security
- * 
+ *
  * This store handles:
  * - Screen lock state management
  * - Password verification for unlocking
  * - Lock information persistence
  * - Security-related state
- * 
+ *
  * @example
  * ```typescript
  * // Basic usage
  * const lockStore = useLockStore()
- * 
+ *
  * // Set lock password
  * lockStore.setLockInfo({ isLock: true, password: 'hashedPassword' })
- * 
+ *
  * // Attempt to unlock
  * const success = lockStore.unLock('userPassword')
  * ```
@@ -55,7 +55,7 @@ export const useLockStore = defineStore('lock', {
       }
     }
   },
-  
+
   /**
    * Computed properties (getters) for accessing lock state
    */
@@ -68,7 +68,7 @@ export const useLockStore = defineStore('lock', {
       return this.lockInfo
     }
   },
-  
+
   /**
    * Actions for modifying lock state and performing lock operations
    */
@@ -80,7 +80,7 @@ export const useLockStore = defineStore('lock', {
     setLockInfo(lockInfo: lockInfo) {
       this.lockInfo = lockInfo
     },
-    
+
     /**
      * Reset lock information to empty state
      * Clears both lock state and password
@@ -88,12 +88,12 @@ export const useLockStore = defineStore('lock', {
     resetLockInfo() {
       this.lockInfo = {}
     },
-    
+
     /**
      * Attempt to unlock the screen with provided password
      * @param {string} password - Password to verify for unlocking
      * @returns {boolean} True if password matches and unlock successful, false otherwise
-     * 
+     *
      * This action:
      * 1. Compares provided password with stored password
      * 2. Resets lock info if password matches
@@ -108,7 +108,7 @@ export const useLockStore = defineStore('lock', {
       }
     }
   },
-  
+
   /**
    * Enable persistence for this store
    * Lock information will be automatically saved to localStorage and restored on page reload

@@ -1,10 +1,18 @@
 <script setup lang="tsx">
 import { reactive, ref, unref } from 'vue'
-import { getRoleListApi } from '@/api/role'
+import {
+  getRoleListApi,
+  createRoleApi,
+  updateRoleApi,
+  deleteRoleApi,
+  deleteRoleByIdApi,
+  updateRoleStatusApi
+} from '@/api/role'
+import type { RoleCreateRequest, RoleUpdateRequest } from '@/api/role'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElTag } from 'element-plus'
+import { ElTag, ElMessage, ElMessageBox } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
@@ -17,10 +25,13 @@ const { t } = useI18n()
 
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
-    const res = await getRoleListApi()
+    const res: any = await getRoleListApi()
+    // Handle different response structures
+    const data = res.data || res.list || []
+    const total = res.meta?.total || res.total || data.length
     return {
-      list: res.data.list || [],
-      total: res.data.total
+      list: data,
+      total
     }
   }
 })
@@ -35,8 +46,12 @@ const tableColumns = reactive<TableColumn[]>([
     type: 'index'
   },
   {
-    field: 'roleName',
+    field: 'name',
     label: t('role.roleName')
+  },
+  {
+    field: 'key',
+    label: 'Role Key'
   },
   {
     field: 'status',
@@ -45,8 +60,8 @@ const tableColumns = reactive<TableColumn[]>([
       default: (data: any) => {
         return (
           <>
-            <ElTag type={data.row.status === 0 ? 'danger' : 'success'}>
-              {data.row.status === 1 ? t('userDemo.enable') : t('userDemo.disable')}
+            <ElTag type={data.row.status === 'inactive' ? 'danger' : 'success'}>
+              {data.row.status === 'active' ? t('userDemo.enable') : t('userDemo.disable')}
             </ElTag>
           </>
         )
@@ -54,17 +69,17 @@ const tableColumns = reactive<TableColumn[]>([
     }
   },
   {
-    field: 'createTime',
+    field: 'created_at',
     label: t('tableDemo.displayTime')
   },
   {
-    field: 'remark',
+    field: 'description',
     label: t('userDemo.remark')
   },
   {
     field: 'action',
     label: t('userDemo.action'),
-    width: 240,
+    width: 280,
     slots: {
       default: (data: any) => {
         const row = data.row
@@ -76,7 +91,15 @@ const tableColumns = reactive<TableColumn[]>([
             <BaseButton type="success" onClick={() => action(row, 'detail')}>
               {t('exampleDemo.detail')}
             </BaseButton>
-            <BaseButton type="danger">{t('exampleDemo.del')}</BaseButton>
+            <BaseButton
+              type={row.status === 'active' ? 'warning' : 'success'}
+              onClick={() => toggleStatus(row)}
+            >
+              {row.status === 'active' ? 'Deactivate' : 'Activate'}
+            </BaseButton>
+            <BaseButton type="danger" onClick={() => handleDelete(row)}>
+              {t('exampleDemo.del')}
+            </BaseButton>
           </>
         )
       }
@@ -86,9 +109,21 @@ const tableColumns = reactive<TableColumn[]>([
 
 const searchSchema = reactive<FormSchema[]>([
   {
-    field: 'roleName',
+    field: 'name',
     label: t('role.roleName'),
     component: 'Input'
+  },
+  {
+    field: 'status',
+    label: 'Status',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: 'All', value: '' },
+        { label: 'Active', value: 'active' },
+        { label: 'Inactive', value: 'inactive' }
+      ]
+    }
   }
 ])
 
@@ -124,13 +159,57 @@ const AddAction = () => {
 
 const save = async () => {
   const write = unref(writeRef)
-  const formData = await write?.submit()
+  const formData: any = await write?.submit()
   if (formData) {
     saveLoading.value = true
-    setTimeout(() => {
-      saveLoading.value = false
+    try {
+      if (actionType.value === 'edit') {
+        await updateRoleApi(currentRow.value.id, formData)
+        ElMessage.success('Role updated successfully')
+      } else {
+        await createRoleApi(formData)
+        ElMessage.success('Role created successfully')
+      }
       dialogVisible.value = false
-    }, 1000)
+      getList()
+    } catch (error: any) {
+      ElMessage.error(error?.message || 'Operation failed')
+    } finally {
+      saveLoading.value = false
+    }
+  }
+}
+
+const handleDelete = async (row: any) => {
+  try {
+    await ElMessageBox.confirm(
+      `Are you sure you want to delete the role "${row.name}"?`,
+      'Confirm Delete',
+      {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }
+    )
+
+    await deleteRoleByIdApi(row.id)
+    ElMessage.success('Role deleted successfully')
+    getList()
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      ElMessage.error(error?.message || 'Delete failed')
+    }
+  }
+}
+
+const toggleStatus = async (row: any) => {
+  try {
+    const newStatus = row.status === 'active' ? 'inactive' : 'active'
+    await updateRoleStatusApi(row.id, newStatus)
+    ElMessage.success(`Role ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully`)
+    getList()
+  } catch (error: any) {
+    ElMessage.error(error?.message || 'Status update failed')
   }
 }
 </script>
@@ -143,8 +222,6 @@ const save = async () => {
     </div>
     <Table
       :columns="tableColumns"
-      default-expand-all
-      node-key="id"
       :data="dataList"
       :loading="loading"
       :pagination="{
