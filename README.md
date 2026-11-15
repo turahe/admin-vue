@@ -45,7 +45,7 @@ TailAdmin provides essential UI components and layouts for building feature-rich
 
 To get started with TailAdmin, ensure you have the following prerequisites installed and set up:
 
-- Node.js 18.x or later (recommended to use Node.js 20.x or later)
+- Node.js 26.x
 - Recommended IDE Setup: [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
 #### Type Support for `.vue` Imports in TS

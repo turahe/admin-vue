@@ -20,10 +20,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path aliases */
-    "baseUrl": ".",
+    /* Path aliases. TypeScript 7 resolves paths from this file, not baseUrl. */
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "files": [],
@@ -34,6 +33,9 @@
     },
     {
       "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
     }
   ]
 }
