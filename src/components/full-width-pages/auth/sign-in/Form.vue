@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
@@ -11,19 +11,32 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group'
+import { errorMessage } from '@/api/errors'
 import { useFormValidation } from '@/composables/useFormValidation'
 import { EyeCloseIcon, EyeIcon } from '@/icons/layout'
+import { useAuthStore } from '@/stores/auth'
 import { validateSignIn, type SignInFormData } from './schema'
 
 const showPassword = ref(false)
+const submitError = ref('')
+const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
 
 const { values, errorOf, touch, handleSubmit, isSubmitting } = useFormValidation<SignInFormData>(
   { email: '', password: '', keepLoggedIn: false },
   validateSignIn,
 )
 
-const onSubmit = handleSubmit(async () => {
-  // handle submit action
+const onSubmit = handleSubmit(async (data) => {
+  submitError.value = ''
+  try {
+    await auth.login(data.email, data.password)
+    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+    await router.push(redirect)
+  } catch (caught) {
+    submitError.value = errorMessage(caught)
+  }
 })
 </script>
 
@@ -87,6 +100,8 @@ const onSubmit = handleSubmit(async () => {
         Forgot password?
       </RouterLink>
     </div>
+
+    <p v-if="submitError" class="text-sm text-error-600 dark:text-error-400">{{ submitError }}</p>
 
     <div>
       <Button class="w-full" size="lg" type="submit" :disabled="isSubmitting">

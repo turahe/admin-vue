@@ -1,4 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import type { Permission } from '@/rbac/permissions'
+import { useAuthStore } from '@/stores/auth'
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    title?: string
+    requiresAuth?: boolean
+    permission?: Permission
+  }
+}
+
+const blog = () => import('../views/Blog/Shell.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +20,114 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      component: blog,
+      children: [
+        {
+          path: '',
+          name: 'BlogDashboard',
+          component: () => import('../views/Blog/Dashboard.vue'),
+          meta: { title: 'Dashboard', requiresAuth: true, permission: 'dashboard.view' },
+        },
+        {
+          path: 'posts',
+          name: 'PostList',
+          component: () => import('../views/Blog/PostList.vue'),
+          meta: { title: 'Posts', requiresAuth: true, permission: 'posts.view' },
+        },
+        {
+          path: 'posts/new',
+          name: 'PostCreate',
+          component: () => import('../views/Blog/PostEditor.vue'),
+          meta: { title: 'Create Post', requiresAuth: true, permission: 'posts.write' },
+        },
+        {
+          path: 'posts/:id/edit',
+          name: 'PostEdit',
+          component: () => import('../views/Blog/PostEditor.vue'),
+          meta: { title: 'Edit Post', requiresAuth: true, permission: 'posts.write' },
+        },
+        {
+          path: 'posts/:id/preview',
+          name: 'PostPreview',
+          component: () => import('../views/Blog/PostPreview.vue'),
+          meta: { title: 'Preview', requiresAuth: true, permission: 'posts.view' },
+        },
+        {
+          path: 'categories',
+          name: 'Categories',
+          component: () => import('../views/Blog/Categories.vue'),
+          meta: { title: 'Categories', requiresAuth: true, permission: 'categories.manage' },
+        },
+        {
+          path: 'tags',
+          name: 'Tags',
+          component: () => import('../views/Blog/Tags.vue'),
+          meta: { title: 'Tags', requiresAuth: true, permission: 'tags.manage' },
+        },
+        {
+          path: 'media',
+          name: 'Media',
+          component: () => import('../views/Blog/MediaLibrary.vue'),
+          meta: { title: 'Media Library', requiresAuth: true, permission: 'media.manage' },
+        },
+        {
+          path: 'comments',
+          name: 'Comments',
+          component: () => import('../views/Blog/Comments.vue'),
+          meta: { title: 'Comments', requiresAuth: true, permission: 'comments.moderate' },
+        },
+        {
+          path: 'users',
+          name: 'Users',
+          component: () => import('../views/Blog/Users.vue'),
+          meta: { title: 'Users', requiresAuth: true, permission: 'users.manage' },
+        },
+        {
+          path: 'roles',
+          name: 'Roles',
+          component: () => import('../views/Blog/Roles.vue'),
+          meta: { title: 'Roles', requiresAuth: true, permission: 'roles.manage' },
+        },
+        {
+          path: 'appearance/menus',
+          name: 'Menus',
+          component: () => import('../views/Blog/Menus.vue'),
+          meta: { title: 'Navigation Menus', requiresAuth: true, permission: 'appearance.manage' },
+        },
+        {
+          path: 'appearance/widgets',
+          name: 'Widgets',
+          component: () => import('../views/Blog/Widgets.vue'),
+          meta: { title: 'Widgets', requiresAuth: true, permission: 'appearance.manage' },
+        },
+        {
+          path: 'analytics',
+          name: 'Analytics',
+          component: () => import('../views/Blog/Analytics.vue'),
+          meta: { title: 'Analytics', requiresAuth: true, permission: 'analytics.view' },
+        },
+        {
+          path: 'settings/:section',
+          name: 'Settings',
+          component: () => import('../views/Blog/Settings.vue'),
+          meta: { title: 'Settings', requiresAuth: true, permission: 'settings.manage' },
+        },
+        {
+          path: 'activity',
+          name: 'Activity',
+          component: () => import('../views/Blog/Activity.vue'),
+          meta: { title: 'Activity Logs', requiresAuth: true, permission: 'activity.view' },
+        },
+        {
+          path: 'forbidden',
+          name: 'Forbidden',
+          component: () => import('../views/Blog/Forbidden.vue'),
+          meta: { title: 'Forbidden', requiresAuth: true },
+        },
+      ],
+    },
+    {
+      path: '/examples/ecommerce',
       name: 'Ecommerce',
       component: () => import('../views/Dashboard/Ecommerce.vue'),
       meta: {
@@ -140,12 +260,35 @@ const router = createRouter({
         title: 'Signup',
       },
     },
+    {
+      path: '/login',
+      redirect: (to) => ({ path: '/signin', query: to.query }),
+    },
+    {
+      path: '/forgot-password',
+      name: 'ForgotPassword',
+      component: () => import('../views/Blog/ForgotPassword.vue'),
+      meta: { title: 'Forgot password' },
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: () => import('../views/Blog/ResetPassword.vue'),
+      meta: { title: 'Reset password' },
+    },
   ],
 })
 
 export default router
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
-  next()
+  const auth = useAuthStore()
+  if (to.meta.requiresAuth && !auth.user) {
+    return { name: 'Signin', query: { redirect: to.fullPath } }
+  }
+  if (to.meta.permission && !auth.can(to.meta.permission)) {
+    return { name: 'Forbidden' }
+  }
+  return true
 })

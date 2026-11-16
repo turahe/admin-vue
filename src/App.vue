@@ -3,6 +3,8 @@
     <ThemeProvider>
       <SidebarProvider>
         <RouterView />
+        <ToastHost />
+        <ConfirmHost />
       </SidebarProvider>
     </ThemeProvider>
   </ConfigProvider>
@@ -13,6 +15,8 @@ import { computed } from 'vue'
 import { ConfigProvider } from 'reka-ui'
 import ThemeProvider from './components/layout/ThemeProvider.vue'
 import SidebarProvider from './components/layout/SidebarProvider.vue'
+import ConfirmHost from './components/cms/ConfirmHost.vue'
+import ToastHost from './components/cms/ToastHost.vue'
 import { useRTL } from './composables/useRTL'
 
 // reka-ui popper wrappers (dropdowns, popovers, tooltips, selects) read their direction from here;

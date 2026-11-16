@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
@@ -22,6 +23,8 @@ import {
   UserCircleIcon,
 } from '@/icons/layout'
 import { cn } from '@/utils/cn'
+import { setLocale } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 interface Language {
   id: string
@@ -34,6 +37,7 @@ interface Language {
 
 const languages: Language[] = [
   { id: 'en', name: 'English', shortName: 'English', flag: 'flag-us.svg', dir: 'ltr' },
+  { id: 'id', name: 'Bahasa Indonesia', shortName: 'Indonesia', flag: 'flag-id.svg', dir: 'ltr' },
   {
     id: 'ar',
     name: 'Arabic (Saudi)',
@@ -47,17 +51,27 @@ const languages: Language[] = [
 ]
 
 const { isRtl, setRTL } = useRTL()
+const auth = useAuthStore()
+const router = useRouter()
 const isOpen = ref(false)
 const currentLocale = ref<string>(isRtl.value ? 'ar' : 'en')
 const currentLang = computed<Language>(
-  () => languages.find((l) => l.id === currentLocale.value) ?? languages[0],
+  () => languages.find((language) => language.id === currentLocale.value) ?? languages[0]!,
 )
+const displayName = computed(() => auth.user?.name ?? 'Musharof Chowdhury')
+const displayEmail = computed(() => auth.user?.email ?? 'randomuser@pimjo.com')
 
 const handleSelectLanguage = (id: string) => {
-  const language = languages.find((l) => l.id === id)
+  const language = languages.find((item) => item.id === id)
   if (!language) return
   currentLocale.value = id
   setRTL(language.dir === 'rtl')
+  if (id === 'en' || id === 'id') setLocale(id)
+}
+
+async function signOut() {
+  await auth.logout()
+  await router.push('/signin')
 }
 </script>
 
@@ -68,7 +82,7 @@ const handleSelectLanguage = (id: string) => {
         <img width="44" height="44" src="/images/user/owner.png" alt="User" />
       </span>
 
-      <span class="me-1 block text-sm font-medium">Musharof</span>
+      <span class="me-1 block text-sm font-medium">{{ auth.user?.name ?? 'Musharof' }}</span>
 
       <ChevronDownIcon
         :class="
@@ -83,10 +97,10 @@ const handleSelectLanguage = (id: string) => {
     <DropdownMenuContent align="end" :side-offset="12" class="w-65 p-3">
       <div class="px-3 py-2">
         <span class="block text-sm font-medium text-gray-700 dark:text-gray-400">
-          Musharof Chowdhury
+          {{ displayName }}
         </span>
         <span class="mt-0.5 block text-xs text-gray-500 dark:text-gray-400">
-          randomuser@pimjo.com
+          {{ displayEmail }}
         </span>
       </div>
 
@@ -169,7 +183,7 @@ const handleSelectLanguage = (id: string) => {
 
       <DropdownMenuSeparator />
 
-      <DropdownMenuItem variant="destructive" to="/signin">
+      <DropdownMenuItem variant="destructive" @click="signOut">
         <LogOutIcon />
         Sign out
       </DropdownMenuItem>

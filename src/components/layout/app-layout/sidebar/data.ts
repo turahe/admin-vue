@@ -1,4 +1,14 @@
 import {
+  BarChart3,
+  FileText,
+  LayoutDashboard,
+  MessageSquare,
+  Palette,
+  ScrollText,
+  Settings,
+  Users,
+} from '@lucide/vue'
+import {
   BoxIcon,
   CalendarIcon,
   LayoutGridIcon,
@@ -9,13 +19,62 @@ import {
   TableIcon,
   UserCircleIcon,
 } from '@/icons/layout'
+import type { Permission } from '@/rbac/permissions'
 import type { NavItem } from './types'
 
-export const navItems: NavItem[] = [
+type Translate = (key: string) => string
+
+export function cmsNavItems(t: Translate): NavItem[] {
+  return [
+    { icon: LayoutDashboard, name: t('nav.dashboard'), path: '/', permission: 'dashboard.view' },
+    {
+      icon: FileText,
+      name: t('nav.content'),
+      subItems: [
+        { name: t('nav.posts'), path: '/posts', permission: 'posts.view' },
+        { name: t('nav.create'), path: '/posts/new', permission: 'posts.write' },
+        { name: t('nav.categories'), path: '/categories', permission: 'categories.manage' },
+        { name: t('nav.tags'), path: '/tags', permission: 'tags.manage' },
+        { name: t('nav.media'), path: '/media', permission: 'media.manage' },
+      ],
+    },
+    { icon: MessageSquare, name: t('nav.comments'), path: '/comments', permission: 'comments.moderate' },
+    {
+      icon: Users,
+      name: t('nav.users'),
+      subItems: [
+        { name: t('nav.allUsers'), path: '/users', permission: 'users.manage' },
+        { name: t('nav.roles'), path: '/roles', permission: 'roles.manage' },
+      ],
+    },
+    {
+      icon: Palette,
+      name: t('nav.appearance'),
+      subItems: [
+        { name: t('nav.menus'), path: '/appearance/menus', permission: 'appearance.manage' },
+        { name: t('nav.widgets'), path: '/appearance/widgets', permission: 'appearance.manage' },
+      ],
+    },
+    { icon: BarChart3, name: t('nav.analytics'), path: '/analytics', permission: 'analytics.view' },
+    {
+      icon: Settings,
+      name: t('nav.settings'),
+      subItems: [
+        { name: t('nav.general'), path: '/settings/general', permission: 'settings.manage' },
+        { name: t('nav.seo'), path: '/settings/seo', permission: 'settings.manage' },
+        { name: t('nav.social'), path: '/settings/social', permission: 'settings.manage' },
+        { name: t('nav.reading'), path: '/settings/reading', permission: 'settings.manage' },
+      ],
+    },
+    { icon: ScrollText, name: t('nav.activity'), path: '/activity', permission: 'activity.view' },
+  ]
+}
+
+export const othersItems: NavItem[] = [
   {
     icon: LayoutGridIcon,
-    name: 'Dashboard',
-    subItems: [{ name: 'Ecommerce', path: '/' }],
+    name: 'Ecommerce',
+    path: '/examples/ecommerce',
   },
   {
     icon: CalendarIcon,
@@ -45,9 +104,6 @@ export const navItems: NavItem[] = [
       { name: '404 Error', path: '/error-404' },
     ],
   },
-]
-
-export const othersItems: NavItem[] = [
   {
     icon: PieChartIcon,
     name: 'Charts',
@@ -77,3 +133,15 @@ export const othersItems: NavItem[] = [
     ],
   },
 ]
+
+export function visibleNav(items: NavItem[], can: (permission: Permission) => boolean, signedIn: boolean): NavItem[] {
+  return items.flatMap((item) => {
+    if (item.subItems) {
+      const subItems = item.subItems.filter((subItem) => !subItem.permission || (signedIn && can(subItem.permission)))
+      if (!subItems.length) return []
+      return [{ ...item, subItems }]
+    }
+    if (item.permission && (!signedIn || !can(item.permission))) return []
+    return [item]
+  })
+}

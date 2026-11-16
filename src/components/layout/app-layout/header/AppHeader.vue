@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
@@ -14,7 +14,14 @@ import { cn } from '@/utils/cn'
 
 const inputRef = ref<InstanceType<typeof InputGroupInput> | null>(null)
 const isApplicationMenuOpen = ref(false)
+const search = ref('')
 const { openMobile, toggleSidebar } = useSidebar()
+const router = useRouter()
+
+const submitSearch = () => {
+  const query = search.value.trim()
+  void router.push(query ? { name: 'PostList', query: { q: query } } : { name: 'PostList' })
+}
 
 const toggleApplicationMenu = () => {
   isApplicationMenuOpen.value = !isApplicationMenuOpen.value
@@ -78,7 +85,7 @@ onBeforeUnmount(() => {
         </Button>
 
         <div class="hidden xl:block">
-          <form @submit.prevent>
+          <form @submit.prevent="submitSearch">
             <Field class="xl:w-107.5">
               <InputGroup
                 class="border-gray-200 bg-transparent dark:border-gray-800 dark:bg-white/3"
@@ -88,8 +95,9 @@ onBeforeUnmount(() => {
                 </InputGroupAddon>
                 <InputGroupInput
                   ref="inputRef"
-                  type="text"
-                  placeholder="Search or type command..."
+                  v-model="search"
+                  type="search"
+                  placeholder="Search posts"
                   class="text-gray-800 placeholder:text-gray-400 dark:text-white/90 dark:placeholder:text-white/30"
                 />
                 <InputGroupAddon align="inline-end">

@@ -21,6 +21,12 @@ TailAdmin provides essential UI components and layouts for building feature-rich
 
 ### Quick Links
 
+- [Blog CMS features](./FEATURES.md)
+- [Architecture](./ARCHITECTURE.md)
+- [API conventions](./API_CONVENTIONS.md)
+- [Roles and permissions](./RBAC.md)
+- [Design system notes](./DESIGN_SYSTEM.md)
+
 - [✨ Visit Website](https://tailadmin.com)
 - [📄 Documentation](https://tailadmin.com/docs)
 - [⬇️ Download](https://tailadmin.com/download)
@@ -38,6 +44,12 @@ TailAdmin provides essential UI components and layouts for building feature-rich
 - [Next.js Version](https://github.com/TailAdmin/free-nextjs-admin-dashboard)
 - [React Version](https://github.com/TailAdmin/free-react-tailwind-admin-dashboard)
 - [Angular Version](https://github.com/TailAdmin/free-angular-tailwind-dashboard)
+
+## Blog CMS
+
+The app includes a blog administration panel on top of the TailAdmin shell. Sign in at `/signin`. The dev server proxies `/api` to the Blog API at `http://localhost:8080`. A seeded API accepts `admin@example.com` / `ChangeMeNow!123`.
+
+The access token stays in memory and is sent as `Authorization: Bearer`. It is not written to `localStorage`. A reload asks you to sign in again. The original TailAdmin pages stay under the Template section of the sidebar, including ecommerce at `/examples/ecommerce`.
 
 ## Installation
 

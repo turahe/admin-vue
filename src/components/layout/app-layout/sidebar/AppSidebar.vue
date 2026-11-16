@@ -1,23 +1,34 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Sidebar, SidebarContent, useSidebar } from '@/components/ui/sidebar'
-import { navItems, othersItems } from './data'
+import { useAuthStore } from '@/stores/auth'
+import { cmsNavItems, othersItems, visibleNav } from './data'
 import AppSidebarHeader from './SidebarHeader.vue'
 import SidebarNavGroup from './SidebarNavGroup.vue'
 import SidebarWidget from './SidebarWidget.vue'
 import type { MenuType, NavItem } from './types'
 
-const menuSections: { type: MenuType; label: string; items: NavItem[] }[] = [
-  { type: 'main', label: 'Menu', items: navItems },
-  { type: 'others', label: 'Others', items: othersItems },
-]
+const route = useRoute()
+const { open, isMobile, isHovered } = useSidebar()
+const { t } = useI18n()
+const auth = useAuthStore()
+
+const menuSections = computed(() => [
+  {
+    type: 'main' as const,
+    label: t('nav.menu'),
+    items: visibleNav(cmsNavItems(t), auth.can, auth.signedIn),
+  },
+  { type: 'others' as const, label: t('nav.template'), items: othersItems },
+])
 
 const findMatchingSubmenu = (path: string) => {
-  for (const section of menuSections) {
+  for (const section of menuSections.value) {
     for (let index = 0; index < section.items.length; index++) {
-      const nav = section.items[index]
-      if (nav.subItems?.some((subItem) => subItem.path === path)) {
+      const nav: NavItem | undefined = section.items[index]
+      if (nav?.subItems?.some((subItem) => subItem.path === path)) {
         return { type: section.type, index }
       }
     }
@@ -25,20 +36,17 @@ const findMatchingSubmenu = (path: string) => {
   return null
 }
 
-const route = useRoute()
-const { open, isMobile, isHovered } = useSidebar()
-
 const pathname = computed(() => route.path)
-
 const showContent = computed(() => open.value || isHovered.value || isMobile.value)
+const openSubmenu = ref<{ type: MenuType; index: number } | null>(null)
 
-const openSubmenu = ref<{ type: MenuType; index: number } | null>(
-  findMatchingSubmenu(pathname.value),
+watch(
+  pathname,
+  (path) => {
+    openSubmenu.value = findMatchingSubmenu(path)
+  },
+  { immediate: true },
 )
-
-watch(pathname, (path) => {
-  openSubmenu.value = findMatchingSubmenu(path)
-})
 
 const handleSubmenuToggle = (index: number, menuType: MenuType) => {
   const prevOpenSubmenu = openSubmenu.value

@@ -1,4 +1,5 @@
 import type { Component } from 'vue'
+import type { Permission } from '@/rbac/permissions'
 
 export type MenuType = 'main' | 'others'
 
@@ -8,6 +9,7 @@ export interface SubItem {
   pro?: boolean
   new?: boolean
   target?: string
+  permission?: Permission
 }
 
 export interface NavItem {
@@ -16,5 +18,6 @@ export interface NavItem {
   path?: string
   new?: boolean
   target?: string
+  permission?: Permission
   subItems?: SubItem[]
 }
